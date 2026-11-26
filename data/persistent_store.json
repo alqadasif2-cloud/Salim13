@@ -1,0 +1,394 @@
+{
+  "users": {
+    "1": {
+      "id": 1,
+      "username": "Salim",
+      "displayName": "القائد Salim",
+      "password": "12345678",
+      "passwordHash": "",
+      "salt": "",
+      "role": "owner",
+      "avatarUrl": null,
+      "warningsCount": 0,
+      "verifiedChannels": {},
+      "isRestrictedAdmin": false,
+      "createdAt": 1795405433904,
+      "updatedAt": 1795405433904
+    },
+    "76": {
+      "id": 76,
+      "username": "Salim0",
+      "displayName": "Salim0",
+      "password": "7676762777",
+      "passwordHash": "c5752732519b7183c436cca3501f37808061e3f01e2ee957b565f38400f3316a",
+      "salt": "97f7cd43d93b4944796fc9db95767ff4",
+      "role": "owner",
+      "avatarUrl": null,
+      "warningsCount": 0,
+      "verifiedChannels": {},
+      "isRestrictedAdmin": true,
+      "createdAt": 1795297392613,
+      "updatedAt": 1795297481858
+    },
+    "77": {
+      "id": 77,
+      "username": "Salim00",
+      "displayName": "Salim",
+      "password": "787878",
+      "passwordHash": "",
+      "salt": "",
+      "role": "owner",
+      "avatarUrl": null,
+      "warningsCount": 0,
+      "verifiedChannels": {},
+      "isRestrictedAdmin": true,
+      "createdAt": 1795297392613,
+      "updatedAt": 1795297392613
+    }
+  },
+  "channels": {
+    "general_trading": {
+      "id": "general_trading",
+      "name": "💬 دردشة عامة - دفعة 3000$",
+      "description": "القناة العامة لتبادل الأفكار والنقاشات بين جميع المشتركين.",
+      "isPrivate": false,
+      "visibility": "public",
+      "allowedMemberIds": [],
+      "memberIds": [
+        1
+      ],
+      "createdAt": 1735689600000
+    },
+    "signals_vip": {
+      "id": "signals_vip",
+      "name": "👑 قناة Salim VIP الخاصة",
+      "description": "قناة التوصيات والصفقات المتقدمة الخاصة بالأعضاء المصرح لهم فقط.",
+      "isPrivate": true,
+      "visibility": "hidden",
+      "allowedMemberIds": [
+        1
+      ],
+      "memberIds": [
+        1
+      ],
+      "createdAt": 1735689600000
+    }
+  },
+  "channelMessages": {
+    "ch_verify_1794601920384": [
+      {
+        "id": "msg_verify_1794601920605",
+        "channelId": "ch_verify_1794601920384",
+        "senderId": 1,
+        "senderName": "القائد Salim",
+        "senderRole": "owner",
+        "text": "رسالة اختبار السحابة",
+        "imageUrl": null,
+        "audioUrl": null,
+        "fileUrl": null,
+        "fileName": null,
+        "replyTo": null,
+        "timestamp": 1794601920628,
+        "pinned": false,
+        "reactions": {}
+      }
+    ],
+    "channel_1794796754197_tt9n7": [
+      {
+        "id": "msg_1795297448544_1_en123l",
+        "channelId": "channel_1794796754197_tt9n7",
+        "senderId": 1,
+        "senderName": "القائد Salim",
+        "senderRole": "owner",
+        "text": ".",
+        "imageUrl": null,
+        "audioUrl": null,
+        "fileUrl": null,
+        "fileName": null,
+        "replyTo": null,
+        "timestamp": 1795297448544,
+        "pinned": false,
+        "reactions": {}
+      }
+    ],
+    "ch_test_stagger_1795302778035": [
+      {
+        "id": "msg_1795302778754_0_32f427",
+        "channelId": "ch_test_stagger_1795302778035",
+        "senderId": 20708,
+        "senderName": "قاسم الحميري",
+        "senderRole": "user",
+        "senderAvatarUrl": null,
+        "text": "ما شاء الله تبارك الله",
+        "reactions": {},
+        "isPinned": false,
+        "isDeleted": false,
+        "createdByOwnerId": 1,
+        "timestamp": 1795302778754
+      },
+      {
+        "id": "msg_1795302779906_1_8a4b78",
+        "channelId": "ch_test_stagger_1795302778035",
+        "senderId": 28865,
+        "senderName": "أروى العدني",
+        "senderRole": "user",
+        "senderAvatarUrl": null,
+        "text": "يا سلام شغل فنان",
+        "reactions": {},
+        "isPinned": false,
+        "isDeleted": false,
+        "createdByOwnerId": 1,
+        "timestamp": 1795302779906
+      },
+      {
+        "id": "msg_1795302780620_0_058e40",
+        "channelId": "ch_test_stagger_1795302778035",
+        "senderId": 22294,
+        "senderName": "وضاح الأغبري",
+        "senderRole": "user",
+        "senderAvatarUrl": null,
+        "text": "كفو يا قائد",
+        "reactions": {},
+        "isPinned": false,
+        "isDeleted": false,
+        "createdByOwnerId": 1,
+        "timestamp": 1795302780620
+      }
+    ]
+  },
+  "privateMessages": {
+    "1_78": [
+      {
+        "id": "pm_1795297189994_1_7zxcp1",
+        "conversationId": "1_78",
+        "senderId": 1,
+        "receiverId": 78,
+        "senderName": "القائد Salim",
+        "senderRole": "owner",
+        "text": "الو",
+        "imageUrl": null,
+        "audioUrl": null,
+        "fileUrl": null,
+        "fileName": null,
+        "replyTo": null,
+        "timestamp": 1795297189994,
+        "pinned": false,
+        "reactions": {},
+        "participantIds": [
+          1,
+          78
+        ],
+        "participantId": 78
+      },
+      {
+        "id": "pm_1795297426464_1_q4f08r",
+        "conversationId": "1_78",
+        "senderId": 1,
+        "receiverId": 78,
+        "senderName": "القائد Salim",
+        "senderRole": "owner",
+        "text": "G",
+        "imageUrl": null,
+        "audioUrl": null,
+        "fileUrl": null,
+        "fileName": null,
+        "replyTo": null,
+        "timestamp": 1795297426464,
+        "pinned": false,
+        "reactions": {},
+        "participantIds": [
+          1,
+          78
+        ],
+        "participantId": 78
+      }
+    ]
+  },
+  "challenges": {},
+  "trades": {},
+  "appUpdates": {
+    "latest": {
+      "versionCode": 16,
+      "versionName": "1.3.2",
+      "title": "تحديث Salim الرسمي v1.3.2",
+      "description": "إصدار Salim 1.3.2 مستقر ومحدّث مع ربط سحابي كامل بـ Firebase.",
+      "downloadUrl": "",
+      "storageSource": "firebase_storage",
+      "storagePath": "updates/Salim-v1.3.2.apk",
+      "fileName": "Salim-v1.3.2.apk",
+      "fileSize": 28412000,
+      "sha256": "a57242c83822cee194df80bc87c5f07cf44b91ca52999337a6ba5d87cd71bcb6",
+      "isMandatory": false,
+      "isActive": true,
+      "isHidden": false,
+      "distributionStatus": "enabled",
+      "publishedAt": 1794462199616,
+      "publishedBy": "Salim",
+      "createdAt": 1794462199616,
+      "updatedAt": 1794462199616
+    }
+  },
+  "appUpdatesHistory": [],
+  "globalDistributionEnabled": true,
+  "aiAssistant": {
+    "threads": {
+      "owner_salim_1": {
+        "id": "owner_salim_1",
+        "ownerId": 1,
+        "ownerUsername": "Salim",
+        "activeSection": "channels",
+        "activeChannelId": "channel_1794796754197_tt9n7",
+        "activeChannelName": "القناة العامة",
+        "activePartnerId": null,
+        "createdAt": 1795297574483,
+        "updatedAt": 1795406001000
+      }
+    },
+    "messages": [],
+    "drafts": {
+      "aidraft_1795297641840_528818bf": {
+        "id": "aidraft_1795297641840_528818bf",
+        "ownerId": 1,
+        "ownerUsername": "Salim",
+        "channelId": "channel_1794796754197_tt9n7",
+        "channelName": "القناة العامة",
+        "topic": "الصفقة التي حققت أهدافها وربحًا قدره 25 دولارًا",
+        "status": "cancelled",
+        "items": [
+          {
+            "id": "vp_1_b4fcf5",
+            "personaName": "ماجد القحطاني",
+            "dialect": "خليجي",
+            "styleTag": "متوسط بدعاء صادق وتقدير",
+            "text": "الله يبارك لك يا سليم، تحققت الأهداف وجبنا 25 دولار بالتمام."
+          },
+          {
+            "id": "vp_2_6233c9",
+            "personaName": "سلمى الشناوي",
+            "dialect": "مصري",
+            "styleTag": "قصير جداً وحماسي",
+            "text": "عاش بجد، 25 دولار في المضمون 🔥"
+          },
+          {
+            "id": "vp_3_b1b1b6",
+            "personaName": "مروان الحلبي",
+            "dialect": "شامي",
+            "styleTag": "متوسط بتقدير للتحليل",
+            "text": "يعطيك العافية، تحليل مرتب خلّى الصفقة تحقق أهدافها وتربح 25 دولار 👌✨"
+          },
+          {
+            "id": "vp_4_c8616f",
+            "personaName": "نادية العبيدي",
+            "dialect": "فصحى",
+            "styleTag": "جملتان قصيرتان بانضباط وتقدير",
+            "text": "الانضباط في التداول يصنع الفارق دائماً. سعدت بتحقيق الصفقة أهدافها وربح 25 دولارًا، كل الشكر والتقدير."
+          }
+        ],
+        "createdAt": 1795297641840,
+        "updatedAt": 1795297646920
+      }
+    },
+    "pendingActions": {},
+    "auditLogs": [
+      {
+        "id": "aiaudit_1795405885412_ab07a00d",
+        "ownerId": 1,
+        "ownerUsername": "Salim",
+        "actionType": "read_channel_messages",
+        "command": "اقرأ آخر 5 رسائل في القناة العامة",
+        "target": "القناة العامة (channel_1794796754197_tt9n7)",
+        "status": "success",
+        "details": "قراءة آخر 5 رسائل مباشرة.",
+        "timestamp": 1795405885412
+      },
+      {
+        "id": "aiaudit_1795405885318_659ddd89",
+        "ownerId": 1,
+        "ownerUsername": "Salim",
+        "actionType": "navigate_app",
+        "command": "توجّه إلى القناة العامة",
+        "target": "القناة العامة (channel_1794796754197_tt9n7)",
+        "status": "success",
+        "details": "تم التوجيه مباشرة إلى قناة القناة العامة.",
+        "timestamp": 1795405885318
+      },
+      {
+        "id": "aiaudit_1795298663227_11a609ad",
+        "ownerId": 1,
+        "ownerUsername": "Salim",
+        "actionType": "reset_conversation",
+        "command": "مسح سجل محادثة المساعد الذكي",
+        "target": "owner_salim_1",
+        "status": "success",
+        "details": "تم بدء جلسة محادثة جديدة ونظيفة للمالك سليم.",
+        "timestamp": 1795298663228
+      },
+      {
+        "id": "aiaudit_1795298653830_f585ca9e",
+        "ownerId": 1,
+        "ownerUsername": "Salim",
+        "actionType": "reset_conversation",
+        "command": "مسح سجل محادثة المساعد الذكي",
+        "target": "owner_salim_1",
+        "status": "success",
+        "details": "تم بدء جلسة محادثة جديدة ونظيفة للمالك سليم.",
+        "timestamp": 1795298653830
+      },
+      {
+        "id": "aiaudit_1795297647875_c84fc5b3",
+        "ownerId": 1,
+        "ownerUsername": "Salim",
+        "actionType": "reset_conversation",
+        "command": "مسح سجل محادثة المساعد الذكي",
+        "target": "owner_salim_1",
+        "status": "success",
+        "details": "تم بدء جلسة محادثة جديدة ونظيفة للمالك سليم.",
+        "timestamp": 1795297647875
+      },
+      {
+        "id": "aiaudit_1795297647110_3529d331",
+        "ownerId": 1,
+        "ownerUsername": "Salim",
+        "actionType": "cancel_virtual_personas",
+        "command": "إلغاء مسودة التفاعلات",
+        "target": "القناة العامة (channel_1794796754197_tt9n7)",
+        "status": "cancelled",
+        "details": "تم إلغاء المسودة (4 تفاعلات) قبل النشر.",
+        "timestamp": 1795297647110
+      },
+      {
+        "id": "aiaudit_1795297642072_0ed62e2d",
+        "ownerId": 1,
+        "ownerUsername": "Salim",
+        "actionType": "prepare_virtual_personas",
+        "command": "أنشئ 4 تفاعلات حول الصفقة التي حققت أهدافها وربحًا قدره 25 دولارًا",
+        "target": "القناة العامة (channel_1794796754197_tt9n7)",
+        "status": "pending",
+        "details": "تم إعداد مسودة 4 تفاعلات افتراضية حول \"الصفقة التي حققت أهدافها وربحًا قدره 25 دولارًا\" بانتظار اعتماد المالك.",
+        "timestamp": 1795297642072
+      },
+      {
+        "id": "aiaudit_1795297598314_8d94036d",
+        "ownerId": 1,
+        "ownerUsername": "Salim",
+        "actionType": "navigate_app",
+        "command": "توجّه إلى القناة العامة",
+        "target": "القناة العامة (channel_1794796754197_tt9n7)",
+        "status": "success",
+        "details": "تم تحديث السياق والانتقال إلى قناة القناة العامة.",
+        "timestamp": 1795297598314
+      },
+      {
+        "id": "aiaudit_1795297585400_bc408c5d",
+        "ownerId": 1,
+        "ownerUsername": "Salim",
+        "actionType": "reset_conversation",
+        "command": "مسح سجل محادثة المساعد الذكي",
+        "target": "owner_salim_1",
+        "status": "success",
+        "details": "تم بدء جلسة محادثة جديدة ونظيفة للمالك سليم.",
+        "timestamp": 1795297585400
+      }
+    ]
+  }
+}

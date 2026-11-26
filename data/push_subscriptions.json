@@ -1,0 +1,24 @@
+[
+  {
+    "id": "fcm_tok_1_and_f995a33b5e0b45cb",
+    "token": "dc2q7HCDT9ejcMrDnM3XGP:APA91bGEEC_EQAwUOxlg-814sctMazGaB1h9J6iDxNhMMpjC5BjZjDjG8kE7eIb9WUjO45kw1flkDL3zIUu3-HamwqJoNuCmEig5xkGHmxFakW40XjsYFiw",
+    "userId": 1,
+    "username": "القائد Salim",
+    "deviceId": "and_f995a33b5e0b45cb",
+    "platform": "android",
+    "deviceModel": "Mozilla/5.0 (Linux; Android 14; SM-A135U Build/UP1A.231005.007; wv) AppleWebKit/537.36 (KHTML, like ",
+    "subscription": null,
+    "updatedAt": 1795667191622
+  },
+  {
+    "id": "fcm_tok_78_and_f0b8a7730e754f28",
+    "token": "cK7bm1AQR9an19SL9GbCDe:APA91bFTZGuL0o8ZicsN4MI3OB9cQQpeBzqMr9Un38txNf4jlsOfxFMicjnQGWE44R5sWBK5FHVXZOdhn1gWV1ungYNh3XfqgzJmoLOEWuwLnuxuRBlw64Q",
+    "userId": 78,
+    "username": "Eslam",
+    "deviceId": "and_f0b8a7730e754f28",
+    "platform": "android",
+    "deviceModel": "Mozilla/5.0 (Linux; Android 14; SM-A135U Build/UP1A.231005.007; wv) AppleWebKit/537.36 (KHTML, like ",
+    "subscription": null,
+    "updatedAt": 1795666618230
+  }
+]

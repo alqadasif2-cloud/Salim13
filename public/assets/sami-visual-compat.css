@@ -1,0 +1,2111 @@
+/**
+ * Salim Visual Compatibility Engine for Older Android Versions & WebViews
+ * Solves:
+ * 1. oklch() and oklab() missing support in Chromium < 111 (Android 7-11)
+ * 2. color-mix() missing support in Chromium < 111
+ * 3. backdrop-filter transparency glitches on older Mali/Adreno GPUs
+ * 4. High-contrast solid fallbacks for buttons, cards, headers, and dialogs
+ * 5. Zero-bleed background image dimming
+ */
+
+/* ==========================================================================
+   1. CORE RGB/HEX VARIABLE FALLBACKS (UNIVERSAL BROWSER SUPPORT)
+   ========================================================================== */
+:root, :host {
+  --color-amber-200: #fde68a;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+  --color-emerald-200: #a7f3d0;
+  --color-emerald-300: #6ee7b7;
+  --color-emerald-400: #34d399;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+  --color-rose-200: #fecdd3;
+  --color-rose-300: #fda4af;
+  --color-rose-400: #fb7185;
+  --color-rose-500: #f43f5e;
+  --color-rose-600: #e11d48;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+  --color-slate-950: #020617;
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --sami-bg-root: #050811;
+  --sami-bg-card: #0d131f;
+  --sami-bg-card-alt: #121824;
+  --sami-bg-nav: #080d1a;
+  --sami-gold-primary: #fbbf24;
+  --sami-gold-dark: #f59e0b;
+}
+
+/* ==========================================================================
+   2. GUARANTEED SOLID BACKGROUNDS (NO TRANSPARENT COLLAPSE)
+   ========================================================================== */
+.bg-slate-800 {
+  background-color: #1e293b !important;
+}
+.bg-slate-800\/50 {
+  background-color: rgba(30, 41, 59, 0.75) !important;
+}
+.bg-slate-800\/80 {
+  background-color: rgba(30, 41, 59, 0.90) !important;
+}
+.bg-slate-900 {
+  background-color: #0f172a !important;
+}
+.bg-slate-900\/90 {
+  background-color: #0f172a !important;
+  background-color: rgba(15, 23, 42, 0.96) !important;
+}
+.bg-slate-900\/40 {
+  background-color: rgba(15, 23, 42, 0.70) !important;
+}
+.bg-slate-950 {
+  background-color: #020617 !important;
+}
+.bg-slate-950\/85 {
+  background-color: #050811 !important;
+  background-color: rgba(5, 8, 17, 0.94) !important;
+}
+.bg-slate-950\/80 {
+  background-color: #050811 !important;
+  background-color: rgba(5, 8, 17, 0.92) !important;
+}
+
+/* Custom dark hex classes used in Salim */
+.bg-\[\#050811\] {
+  background-color: #050811 !important;
+}
+.bg-\[\#050811\]\/80 {
+  background-color: #050811 !important;
+  background-color: rgba(5, 8, 17, 0.92) !important;
+}
+.bg-\[\#070a10\] {
+  background-color: #070a10 !important;
+}
+.bg-\[\#0b0f17\] {
+  background-color: #0b0f17 !important;
+}
+.bg-\[\#0b0f17\]\/95 {
+  background-color: #0b0f17 !important;
+  background-color: rgba(11, 15, 23, 0.98) !important;
+}
+.bg-\[\#0d131f\] {
+  background-color: #0d131f !important;
+}
+.bg-\[\#0d131f\]\/90 {
+  background-color: #0d131f !important;
+  background-color: rgba(13, 19, 31, 0.96) !important;
+}
+.bg-\[\#121824\] {
+  background-color: #121824 !important;
+}
+.bg-\[\#121824\]\/90 {
+  background-color: #121824 !important;
+  background-color: rgba(18, 24, 36, 0.96) !important;
+}
+.bg-\[\#141d30\] {
+  background-color: #141d30 !important;
+}
+.bg-\[\#141d30\]\/95 {
+  background-color: #141d30 !important;
+  background-color: rgba(20, 29, 48, 0.98) !important;
+}
+.bg-\[\#0a101f\] {
+  background-color: #0a101f !important;
+}
+.bg-\[\#080d1a\] {
+  background-color: #080d1a !important;
+}
+.bg-\[\#141b2a\] {
+  background-color: #141b2a !important;
+}
+
+/* Gold backgrounds */
+.bg-amber-400 {
+  background-color: #fbbf24 !important;
+}
+.bg-amber-500 {
+  background-color: #f59e0b !important;
+}
+.bg-amber-400\/10 {
+  background-color: rgba(251, 191, 36, 0.12) !important;
+}
+.bg-amber-400\/15 {
+  background-color: rgba(251, 191, 36, 0.18) !important;
+}
+.bg-amber-400\/20 {
+  background-color: rgba(251, 191, 36, 0.24) !important;
+}
+.bg-amber-500\/10 {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+}
+.bg-amber-500\/15 {
+  background-color: rgba(245, 158, 11, 0.18) !important;
+}
+.bg-amber-500\/20 {
+  background-color: rgba(245, 158, 11, 0.24) !important;
+}
+
+/* Emerald & Rose backgrounds */
+.bg-emerald-400\/20 {
+  background-color: rgba(52, 211, 153, 0.24) !important;
+}
+.bg-emerald-500\/20 {
+  background-color: rgba(16, 185, 129, 0.24) !important;
+}
+.bg-rose-500\/20 {
+  background-color: rgba(244, 63, 94, 0.24) !important;
+}
+
+/* ==========================================================================
+   3. GUARANTEED TEXT CONTRAST (NO INVISIBLE OR MUTED TEXT)
+   ========================================================================== */
+.text-slate-100 {
+  color: #f1f5f9 !important;
+}
+.text-slate-200 {
+  color: #e2e8f0 !important;
+}
+.text-slate-300 {
+  color: #cbd5e1 !important;
+}
+.text-slate-400 {
+  color: #94a3b8 !important;
+}
+.text-amber-300 {
+  color: #fcd34d !important;
+}
+.text-amber-400 {
+  color: #fbbf24 !important;
+}
+.text-amber-500 {
+  color: #f59e0b !important;
+}
+.text-emerald-400 {
+  color: #34d399 !important;
+}
+.text-rose-400 {
+  color: #fb7185 !important;
+}
+.text-slate-950 {
+  color: #020617 !important;
+}
+
+/* ==========================================================================
+   4. BORDERS WITH HIGH CONTRAST & GOLD GLOW
+   ========================================================================== */
+.border-slate-800 {
+  border-color: #1e293b !important;
+}
+.border-slate-700 {
+  border-color: #334155 !important;
+}
+.border-slate-800\/80 {
+  border-color: rgba(30, 41, 59, 0.85) !important;
+}
+.border-slate-700\/70 {
+  border-color: rgba(51, 65, 85, 0.75) !important;
+}
+.border-slate-700\/80 {
+  border-color: rgba(51, 65, 85, 0.85) !important;
+}
+.border-amber-400 {
+  border-color: #fbbf24 !important;
+}
+.border-amber-500 {
+  border-color: #f59e0b !important;
+}
+.border-amber-500\/20 {
+  border-color: rgba(245, 158, 11, 0.28) !important;
+}
+.border-amber-500\/30 {
+  border-color: rgba(245, 158, 11, 0.38) !important;
+}
+.border-amber-500\/40 {
+  border-color: rgba(245, 158, 11, 0.48) !important;
+}
+.border-amber-500\/45 {
+  border-color: rgba(245, 158, 11, 0.52) !important;
+}
+.border-amber-400\/30 {
+  border-color: rgba(251, 191, 36, 0.38) !important;
+}
+.border-amber-400\/40 {
+  border-color: rgba(251, 191, 36, 0.48) !important;
+}
+.border-amber-400\/60 {
+  border-color: rgba(251, 191, 36, 0.68) !important;
+}
+.border-emerald-500\/30 {
+  border-color: rgba(16, 185, 129, 0.38) !important;
+}
+.border-rose-500\/30 {
+  border-color: rgba(244, 63, 94, 0.38) !important;
+}
+
+/* ==========================================================================
+   5. SOLID BUTTONS SYSTEM (PREVENTS EXCESSIVE TRANSPARENCY)
+   ========================================================================== */
+.gold-cta-button,
+button.bg-amber-400,
+button.bg-amber-500 {
+  background: #f59e0b !important;
+  background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%) !important;
+  color: #050811 !important;
+  font-weight: 800 !important;
+  border: 1px solid #fde68a !important;
+  box-shadow: 0 4px 18px rgba(245, 158, 11, 0.38) !important;
+}
+
+button.bg-slate-800 {
+  background-color: #1e293b !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #334155 !important;
+}
+
+button.bg-slate-900 {
+  background-color: #0f172a !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #1e293b !important;
+}
+
+/* ==========================================================================
+   6. CARDS & VISUAL CONTAINERS SYSTEM
+   ========================================================================== */
+.luxury-gold-card {
+  background-color: #0d1424 !important;
+  background: linear-gradient(145deg, #10182a 0%, #080d1a 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.45) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85) !important;
+}
+
+.luxury-channel-card {
+  background-color: #0e1526 !important;
+  background: linear-gradient(135deg, #101829 0%, #090e1b 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.32) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.85) !important;
+}
+
+.luxury-channel-card-featured {
+  background-color: #141c2e !important;
+  background: linear-gradient(135deg, #181e2e 0%, #0d121f 100%) !important;
+  border: 1.5px solid rgba(251, 191, 36, 0.75) !important;
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.35) !important;
+}
+
+/* Bottom Navigation Bar: Solid, crisp, and permanently visible */
+nav,
+.sticky.bottom-0 {
+  background-color: #050811 !important;
+  background: linear-gradient(180deg, rgba(12, 19, 36, 0.98) 0%, #050811 100%) !important;
+  border-top: 1px solid rgba(245, 158, 11, 0.32) !important;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* ==========================================================================
+   7. MODALS, POPUPS & BACKDROPS (PREVENTS BLEED-THROUGH)
+   ========================================================================== */
+.fixed.inset-0.z-50 {
+  background-color: rgba(3, 6, 14, 0.92) !important;
+}
+
+.fixed.inset-0.z-50 > div {
+  background-color: #0f1626 !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95) !important;
+}
+
+/* ==========================================================================
+   8. BACKGROUND OVERLAY STABILIZATION
+   ========================================================================== */
+/* Ensures the background image is sufficiently darkened so text is always 100% readable */
+[aria-hidden="true"] > img[src*="background_image"] + div {
+  background-color: rgba(5, 8, 17, 0.54) !important;
+}
+
+/* ==========================================================================
+   9. LEGACY ANDROID / NO-BACKDROP-FILTER ENHANCEMENTS
+   ========================================================================== */
+@supports not (backdrop-filter: blur(10px)) {
+  .backdrop-blur-md,
+  .backdrop-blur-sm,
+  .backdrop-blur-xl,
+  .backdrop-blur-xs {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .bg-\[\#0d131f\]\/90,
+  .bg-\[\#121824\]\/90 {
+    background-color: #0c121e !important;
+  }
+}
+
+.sami-legacy-android .backdrop-blur-md,
+.sami-legacy-android .backdrop-blur-sm,
+.sami-legacy-android .backdrop-blur-xl,
+.sami-legacy-android .backdrop-blur-xs {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.sami-legacy-android .bg-\[\#0d131f\]\/90 {
+  background-color: #0c121e !important;
+}
+
+.sami-legacy-android .bg-\[\#121824\]\/90 {
+  background-color: #0f1626 !important;
+}
+
+.sami-legacy-android .bg-\[\#141d30\]\/95 {
+  background-color: #121a2d !important;
+}
+
+.sami-legacy-android input,
+.sami-legacy-android select,
+.sami-legacy-android textarea {
+  background-color: #0a0f1c !important;
+  color: #f1f5f9 !important;
+  border-color: #334155 !important;
+}
+
+/* ==========================================================================
+   10. MODERN PREMIUM MESSENGER UI & CHAT STYLES (NAVY, BLACK & GOLD)
+   ========================================================================== */
+.sami-chat-container {
+  background-color: #050811 !important;
+}
+
+/* User Message Bubble: Deep Modern Navy */
+.sami-msg-me {
+  background: linear-gradient(135deg, #152238 0%, #101b2d 100%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.25) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Other User Message Bubble: Dark Charcoal */
+.sami-msg-other {
+  background: linear-gradient(135deg, #111827 0%, #0d131f 100%) !important;
+  border: 1px solid rgba(51, 65, 85, 0.6) !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Leader / Salim Message Bubble: Royal Obsidian with Gold Accents */
+.sami-msg-leader {
+  background: linear-gradient(135deg, #161e2e 0%, #111624 100%) !important;
+  border: 1px solid rgba(245, 158, 11, 0.5) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.08), 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Moderator Message Bubble: Deep Teal Accents */
+.sami-msg-moderator {
+  background: linear-gradient(135deg, #0d1f22 0%, #0a1619 100%) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Deleted Message */
+.sami-msg-deleted {
+  background-color: #090e17 !important;
+  border: 1px solid #1e293b !important;
+  color: #64748b !important;
+  font-style: italic !important;
+}
+
+/* Reaction pill badge */
+.sami-reaction-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  line-height: 1;
+  background-color: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(71, 85, 105, 0.6);
+  color: #cbd5e1;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  user-select: none;
+}
+.sami-reaction-pill:hover {
+  background-color: rgba(30, 41, 59, 0.95);
+  border-color: rgba(245, 158, 11, 0.5);
+  transform: translateY(-1px);
+}
+.sami-reaction-pill.is-active {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+  border-color: #fbbf24 !important;
+  color: #fde68a !important;
+  font-weight: 700 !important;
+}
+
+/* Reply quote banner inside message */
+.sami-reply-card {
+  margin: 0.35rem 0;
+  padding: 0.4rem 0.65rem;
+  border-radius: 0.75rem;
+  background-color: rgba(3, 7, 18, 0.65);
+  border-right: 3px solid #fbbf24;
+  text-align: right;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.sami-reply-card:hover {
+  background-color: rgba(3, 7, 18, 0.85);
+}
+
+/* Pinned messages bar */
+.sami-pinned-bar {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.95)) !important;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3) !important;
+}
+
+/* Highlight animation for jumped-to message */
+@keyframes samiMessageHighlight {
+  0% {
+    box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.8), 0 0 30px rgba(251, 191, 36, 0.4);
+    background-color: rgba(245, 158, 11, 0.25);
+  }
+  70% {
+    box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.5), 0 0 20px rgba(251, 191, 36, 0.2);
+    background-color: rgba(245, 158, 11, 0.15);
+  }
+  100% {
+    box-shadow: none;
+  }
+}
+.sami-message-highlight {
+  animation: samiMessageHighlight 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ==========================================================================
+   11. ROYAL MIDNIGHT & METALLIC GOLD CHANNELS UI SYSTEM
+   ========================================================================== */
+@-webkit-keyframes salimCardReveal {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 12px, 0) scale3d(0.985, 0.985, 1);
+    transform: translate3d(0, 12px, 0) scale3d(0.985, 0.985, 1);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+  }
+}
+@keyframes salimCardReveal {
+  0% {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 12px, 0) scale3d(0.985, 0.985, 1);
+    transform: translate3d(0, 12px, 0) scale3d(0.985, 0.985, 1);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+  }
+}
+
+@-webkit-keyframes salimDustFloat {
+  0%, 100% {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    opacity: 0.52;
+  }
+  50% {
+    -webkit-transform: translate3d(-8px, -14px, 0);
+    transform: translate3d(-8px, -14px, 0);
+    opacity: 0.92;
+  }
+}
+@keyframes salimDustFloat {
+  0%, 100% {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    opacity: 0.52;
+  }
+  50% {
+    -webkit-transform: translate3d(-8px, -14px, 0);
+    transform: translate3d(-8px, -14px, 0);
+    opacity: 0.92;
+  }
+}
+
+@-webkit-keyframes salimTrailWave {
+  0%, 100% {
+    -webkit-transform: translate3d(0, 0, 0) rotate(-24deg) scale3d(1, 1, 1);
+    transform: translate3d(0, 0, 0) rotate(-24deg) scale3d(1, 1, 1);
+    opacity: 0.56;
+  }
+  50% {
+    -webkit-transform: translate3d(10px, -8px, 0) rotate(-21deg) scale3d(1.04, 1.04, 1);
+    transform: translate3d(10px, -8px, 0) rotate(-21deg) scale3d(1.04, 1.04, 1);
+    opacity: 0.78;
+  }
+}
+@keyframes salimTrailWave {
+  0%, 100% {
+    -webkit-transform: translate3d(0, 0, 0) rotate(-24deg) scale3d(1, 1, 1);
+    transform: translate3d(0, 0, 0) rotate(-24deg) scale3d(1, 1, 1);
+    opacity: 0.56;
+  }
+  50% {
+    -webkit-transform: translate3d(10px, -8px, 0) rotate(-21deg) scale3d(1.04, 1.04, 1);
+    transform: translate3d(10px, -8px, 0) rotate(-21deg) scale3d(1.04, 1.04, 1);
+    opacity: 0.78;
+  }
+}
+
+@-webkit-keyframes salimCtaGoldenGlow {
+  0%, 100% { opacity: 0.36; }
+  50% { opacity: 0.88; }
+}
+@keyframes salimCtaGoldenGlow {
+  0%, 100% { opacity: 0.36; }
+  50% { opacity: 0.88; }
+}
+
+@-webkit-keyframes salimCtaLightBeam {
+  0% {
+    -webkit-transform: translate3d(105%, 0, 0);
+    transform: translate3d(105%, 0, 0);
+    opacity: 0;
+  }
+  8% { opacity: 0.96; }
+  48% { opacity: 0.96; }
+  58%, 100% {
+    -webkit-transform: translate3d(-105%, 0, 0);
+    transform: translate3d(-105%, 0, 0);
+    opacity: 0;
+  }
+}
+@keyframes salimCtaLightBeam {
+  0% {
+    -webkit-transform: translate3d(105%, 0, 0);
+    transform: translate3d(105%, 0, 0);
+    opacity: 0;
+  }
+  8% { opacity: 0.96; }
+  48% { opacity: 0.96; }
+  58%, 100% {
+    -webkit-transform: translate3d(-105%, 0, 0);
+    transform: translate3d(-105%, 0, 0);
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes salimSearchSheenSweep {
+  0% {
+    -webkit-transform: translate3d(135%, 0, 0) skewX(-18deg);
+    transform: translate3d(135%, 0, 0) skewX(-18deg);
+    opacity: 0;
+  }
+  18% { opacity: 0.55; }
+  55% { opacity: 0.45; }
+  78%, 100% {
+    -webkit-transform: translate3d(-145%, 0, 0) skewX(-18deg);
+    transform: translate3d(-145%, 0, 0) skewX(-18deg);
+    opacity: 0;
+  }
+}
+@keyframes salimSearchSheenSweep {
+  0% {
+    -webkit-transform: translate3d(135%, 0, 0) skewX(-18deg);
+    transform: translate3d(135%, 0, 0) skewX(-18deg);
+    opacity: 0;
+  }
+  18% { opacity: 0.55; }
+  55% { opacity: 0.45; }
+  78%, 100% {
+    -webkit-transform: translate3d(-145%, 0, 0) skewX(-18deg);
+    transform: translate3d(-145%, 0, 0) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes salimSearchWaveRipple {
+  0% {
+    -webkit-transform: translate3d(42%, 0, 0) scale3d(0.45, 0.85, 1);
+    transform: translate3d(42%, 0, 0) scale3d(0.45, 0.85, 1);
+    opacity: 0;
+  }
+  20% { opacity: 0.52; }
+  58% {
+    -webkit-transform: translate3d(-12%, 0, 0) scale3d(1.18, 1.15, 1);
+    transform: translate3d(-12%, 0, 0) scale3d(1.18, 1.15, 1);
+    opacity: 0.34;
+  }
+  84%, 100% {
+    -webkit-transform: translate3d(-58%, 0, 0) scale3d(1.45, 1.25, 1);
+    transform: translate3d(-58%, 0, 0) scale3d(1.45, 1.25, 1);
+    opacity: 0;
+  }
+}
+@keyframes salimSearchWaveRipple {
+  0% {
+    -webkit-transform: translate3d(42%, 0, 0) scale3d(0.45, 0.85, 1);
+    transform: translate3d(42%, 0, 0) scale3d(0.45, 0.85, 1);
+    opacity: 0;
+  }
+  20% { opacity: 0.52; }
+  58% {
+    -webkit-transform: translate3d(-12%, 0, 0) scale3d(1.18, 1.15, 1);
+    transform: translate3d(-12%, 0, 0) scale3d(1.18, 1.15, 1);
+    opacity: 0.34;
+  }
+  84%, 100% {
+    -webkit-transform: translate3d(-58%, 0, 0) scale3d(1.45, 1.25, 1);
+    transform: translate3d(-58%, 0, 0) scale3d(1.45, 1.25, 1);
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes salimPmSheen {
+  0%, 15% {
+    -webkit-transform: translate3d(140%, 0, 0) skewX(-22deg);
+    transform: translate3d(140%, 0, 0) skewX(-22deg);
+    opacity: 0;
+  }
+  35% { opacity: 0.55; }
+  65%, 100% {
+    -webkit-transform: translate3d(-140%, 0, 0) skewX(-22deg);
+    transform: translate3d(-140%, 0, 0) skewX(-22deg);
+    opacity: 0;
+  }
+}
+@keyframes salimPmSheen {
+  0%, 15% {
+    -webkit-transform: translate3d(140%, 0, 0) skewX(-22deg);
+    transform: translate3d(140%, 0, 0) skewX(-22deg);
+    opacity: 0;
+  }
+  35% { opacity: 0.55; }
+  65%, 100% {
+    -webkit-transform: translate3d(-140%, 0, 0) skewX(-22deg);
+    transform: translate3d(-140%, 0, 0) skewX(-22deg);
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes salimNavOrbitSpin {
+  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+@keyframes salimNavOrbitSpin {
+  0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+@-webkit-keyframes salimNavSparkRise {
+  0% {
+    -webkit-transform: translate3d(0, 4px, 0) scale3d(0.4, 0.4, 1);
+    transform: translate3d(0, 4px, 0) scale3d(0.4, 0.4, 1);
+    opacity: 0;
+  }
+  30% { opacity: 0.95; }
+  75% { opacity: 0.72; }
+  100% {
+    -webkit-transform: translate3d(var(--sx, 0px), -14px, 0) scale3d(1.05, 1.05, 1);
+    transform: translate3d(var(--sx, 0px), -14px, 0) scale3d(1.05, 1.05, 1);
+    opacity: 0;
+  }
+}
+@keyframes salimNavSparkRise {
+  0% {
+    -webkit-transform: translate3d(0, 4px, 0) scale3d(0.4, 0.4, 1);
+    transform: translate3d(0, 4px, 0) scale3d(0.4, 0.4, 1);
+    opacity: 0;
+  }
+  30% { opacity: 0.95; }
+  75% { opacity: 0.72; }
+  100% {
+    -webkit-transform: translate3d(var(--sx, 0px), -14px, 0) scale3d(1.05, 1.05, 1);
+    transform: translate3d(var(--sx, 0px), -14px, 0) scale3d(1.05, 1.05, 1);
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes salimNavBurstRing {
+  0% { -webkit-transform: scale3d(0.55, 0.55, 1); transform: scale3d(0.55, 0.55, 1); opacity: 0.9; }
+  100% { -webkit-transform: scale3d(1.55, 1.55, 1); transform: scale3d(1.55, 1.55, 1); opacity: 0; }
+}
+@keyframes salimNavBurstRing {
+  0% { -webkit-transform: scale3d(0.55, 0.55, 1); transform: scale3d(0.55, 0.55, 1); opacity: 0.9; }
+  100% { -webkit-transform: scale3d(1.55, 1.55, 1); transform: scale3d(1.55, 1.55, 1); opacity: 0; }
+}
+
+.salim-channels-stage {
+  position: relative;
+  isolation: isolate;
+}
+
+.salim-channels-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 92% 48% at 50% 4%, rgba(30, 52, 98, 0.36) 0%, rgba(10, 15, 29, 0.32) 55%, rgba(5, 8, 16, 0.72) 100%),
+    radial-gradient(ellipse 68% 48% at 82% 32%, rgba(245, 158, 11, 0.16) 0%, transparent 64%),
+    radial-gradient(ellipse 65% 44% at 18% 74%, rgba(251, 191, 36, 0.13) 0%, transparent 64%),
+    linear-gradient(180deg, rgba(7, 11, 22, 0.68) 0%, rgba(5, 8, 17, 0.76) 55%, rgba(4, 6, 13, 0.86) 100%);
+}
+
+/* Diagonal golden stardust ribbon (pre-feathered radial gradient, zero expensive blur() pass) */
+.salim-gold-trail {
+  position: absolute;
+  top: 4%;
+  left: -18%;
+  right: -18%;
+  height: 460px;
+  background:
+    radial-gradient(ellipse 64% 34% at 50% 42%, rgba(254, 240, 138, 0.24) 0%, rgba(251, 191, 36, 0.14) 38%, rgba(217, 119, 6, 0.05) 66%, transparent 88%),
+    radial-gradient(ellipse 42% 20% at 58% 46%, rgba(255, 251, 235, 0.18) 0%, transparent 78%);
+  -webkit-animation: salimTrailWave 10s ease-in-out infinite;
+  animation: salimTrailWave 10s ease-in-out infinite;
+}
+
+.salim-gold-dust-layer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 22% 16%, rgba(254, 249, 195, 0.95) 50%, transparent 100%),
+    radial-gradient(2px 2px at 34% 22%, rgba(251, 191, 36, 0.92) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 42% 28%, rgba(254, 240, 138, 0.9) 50%, transparent 100%),
+    radial-gradient(2.5px 2.5px at 49% 33%, rgba(255, 251, 235, 0.95) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 56% 37%, rgba(253, 224, 71, 0.9) 50%, transparent 100%),
+    radial-gradient(2px 2px at 63% 43%, rgba(251, 191, 36, 0.92) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 71% 48%, rgba(254, 243, 199, 0.88) 50%, transparent 100%),
+    radial-gradient(2px 2px at 44% 40%, rgba(251, 191, 36, 0.85) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 52% 25%, rgba(254, 240, 138, 0.85) 50%, transparent 100%),
+    radial-gradient(2px 2px at 28% 54%, rgba(251, 191, 36, 0.8) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 76% 62%, rgba(253, 224, 71, 0.78) 50%, transparent 100%),
+    radial-gradient(2px 2px at 38% 76%, rgba(251, 191, 36, 0.75) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 84% 82%, rgba(254, 240, 138, 0.75) 50%, transparent 100%);
+  -webkit-animation: salimDustFloat 11s ease-in-out infinite;
+  animation: salimDustFloat 11s ease-in-out infinite;
+}
+
+.salim-gold-dust-layer-b {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 29% 19%, rgba(253, 224, 71, 0.85) 50%, transparent 100%),
+    radial-gradient(2px 2px at 47% 26%, rgba(254, 249, 195, 0.9) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 58% 31%, rgba(251, 191, 36, 0.88) 50%, transparent 100%),
+    radial-gradient(2px 2px at 68% 39%, rgba(254, 240, 138, 0.9) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 53% 45%, rgba(245, 158, 11, 0.85) 50%, transparent 100%),
+    radial-gradient(2px 2px at 37% 35%, rgba(254, 249, 195, 0.85) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 18% 68%, rgba(253, 224, 71, 0.72) 50%, transparent 100%),
+    radial-gradient(2px 2px at 64% 74%, rgba(251, 191, 36, 0.82) 50%, transparent 100%);
+  -webkit-animation: salimDustFloat 14s ease-in-out infinite reverse;
+  animation: salimDustFloat 14s ease-in-out infinite reverse;
+}
+
+.salim-royal-header {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(20, 29, 50, 0.72) 0%, rgba(11, 17, 32, 0.78) 55%, rgba(18, 25, 44, 0.72) 100%) !important;
+  backdrop-filter: blur(14px) saturate(125%);
+  -webkit-backdrop-filter: blur(14px) saturate(125%);
+  border: 1px solid rgba(251, 191, 36, 0.48) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 243, 199, 0.22),
+    0 12px 30px rgba(0, 0, 0, 0.65),
+    0 0 22px rgba(245, 158, 11, 0.16) !important;
+  -webkit-animation: salimCardReveal 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: salimCardReveal 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.salim-avatar-halo {
+  padding: 2.5px;
+  background: linear-gradient(135deg, #fef08a 0%, #fbbf24 38%, #b45309 72%, #fde68a 100%);
+  box-shadow: 0 0 22px rgba(251, 191, 36, 0.56), inset 0 0 6px rgba(255, 255, 255, 0.35);
+}
+
+.salim-avatar-badge {
+  border: 2px solid #080d1a;
+}
+
+.salim-royal-pm-btn {
+  min-height: 42px;
+  background: linear-gradient(135deg, rgba(64, 44, 11, 0.90) 0%, rgba(30, 21, 7, 0.92) 52%, rgba(74, 51, 13, 0.90) 100%) !important;
+  border: 1px solid rgba(252, 211, 77, 0.72) !important;
+  color: #fde68a !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 243, 199, 0.28),
+    0 4px 18px rgba(245, 158, 11, 0.30) !important;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.salim-royal-pm-btn:hover {
+  border-color: rgba(254, 240, 138, 0.92) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 243, 199, 0.38),
+    0 6px 24px rgba(251, 191, 36, 0.44) !important;
+}
+
+/* ==========================================================================
+   11.1 TRANSLUCENT SMOKED FROSTED GLASS PACKAGES PANEL
+   ========================================================================== */
+.salim-pkg-panel {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    155deg,
+    rgba(30, 39, 58, 0.46) 0%,
+    rgba(16, 23, 39, 0.56) 52%,
+    rgba(34, 36, 48, 0.46) 100%
+  ) !important;
+  backdrop-filter: blur(14px) saturate(135%);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+  border: 1px solid rgba(251, 191, 36, 0.58) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 243, 199, 0.24),
+    inset 0 -1px 0 rgba(251, 191, 36, 0.12),
+    0 14px 36px rgba(0, 0, 0, 0.55),
+    0 0 28px rgba(245, 158, 11, 0.22) !important;
+  -webkit-animation: salimCardReveal 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both;
+  animation: salimCardReveal 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both;
+}
+
+.salim-pkg-chip {
+  background: linear-gradient(135deg, rgba(138, 94, 18, 0.78) 0%, rgba(74, 49, 10, 0.84) 100%);
+  border: 1px solid rgba(252, 211, 77, 0.62);
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.26);
+}
+
+.salim-pkg-row {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    125deg,
+    rgba(46, 56, 80, 0.38) 0%,
+    rgba(20, 28, 46, 0.48) 56%,
+    rgba(50, 42, 30, 0.36) 100%
+  ) !important;
+  border: 1px solid rgba(251, 191, 36, 0.44) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 6px 18px rgba(0, 0, 0, 0.35),
+    0 0 14px rgba(245, 158, 11, 0.10) !important;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.salim-pkg-row-highlight {
+  background: linear-gradient(
+    125deg,
+    rgba(42, 60, 92, 0.42) 0%,
+    rgba(20, 29, 48, 0.50) 54%,
+    rgba(54, 44, 28, 0.38) 100%
+  ) !important;
+  border-color: rgba(147, 197, 253, 0.56) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(191, 219, 254, 0.24),
+    0 6px 20px rgba(0, 0, 0, 0.42),
+    0 0 18px rgba(59, 130, 246, 0.22) !important;
+}
+
+.salim-pkg-row:hover {
+  border-color: rgba(253, 224, 71, 0.80) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 243, 199, 0.24),
+    0 8px 22px rgba(0, 0, 0, 0.52),
+    0 0 20px rgba(245, 158, 11, 0.26) !important;
+}
+
+.salim-pkg-row:active {
+  transform: scale(0.988);
+}
+
+.salim-pkg-thumb {
+  border: 1px solid rgba(251, 191, 36, 0.56);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.28);
+}
+
+/* ==========================================================================
+   11.2 METALLIC GOLD ANIMATED "FULL DETAILS" BUTTONS
+   ========================================================================== */
+.salim-pkg-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 40px;
+  border-radius: 9999px !important;
+  padding-left: 0.95rem !important;
+  padding-right: 0.95rem !important;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  background: linear-gradient(
+    135deg,
+    #704d10 0%,
+    #c68f27 22%,
+    #fce288 48%,
+    #c48c23 74%,
+    #6b480e 100%
+  ) !important;
+  border: 1px solid rgba(254, 240, 138, 0.90) !important;
+  color: #160e02 !important;
+  font-weight: 900 !important;
+  text-shadow: 0 1px 0 rgba(255, 250, 224, 0.52);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 252, 236, 0.82),
+    inset 0 -1.5px 2px rgba(82, 49, 5, 0.58),
+    0 0 18px rgba(251, 191, 36, 0.48),
+    0 4px 14px rgba(217, 119, 6, 0.36) !important;
+  transition: transform 130ms cubic-bezier(0.16, 1, 0.3, 1), filter 120ms ease, box-shadow 140ms ease, border-color 120ms ease;
+}
+
+.salim-pkg-cta > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Metallic golden glow layer pulsing softly (compositor-only opacity) */
+.salim-pkg-cta::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(125% 95% at 50% 0%, rgba(255, 253, 240, 0.48) 0%, rgba(254, 240, 138, 0.26) 48%, rgba(245, 158, 11, 0.12) 100%);
+  box-shadow: inset 0 0 10px rgba(254, 240, 138, 0.45);
+  -webkit-animation: salimCtaGoldenGlow 3.2s ease-in-out infinite;
+  animation: salimCtaGoldenGlow 3.2s ease-in-out infinite;
+  transition: opacity 70ms ease;
+}
+
+/* Thin crisp diagonal luminous ribbon gliding regularly across 100% of the surface */
+.salim-pkg-cta::after {
+  content: "";
+  position: absolute;
+  top: -35%;
+  bottom: -35%;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    108deg,
+    transparent 0%,
+    transparent 43.5%,
+    rgba(254, 240, 138, 0.26) 46.8%,
+    rgba(255, 252, 240, 0.96) 50%,
+    rgba(254, 240, 138, 0.26) 53.2%,
+    transparent 56.5%,
+    transparent 100%
+  );
+  -webkit-animation: salimCtaLightBeam 3.2s cubic-bezier(0.36, 0, 0.22, 1) infinite;
+  animation: salimCtaLightBeam 3.2s cubic-bezier(0.36, 0, 0.22, 1) infinite;
+  will-change: transform, opacity;
+}
+
+/* Stagger rhythm naturally across rows */
+.salim-pkg-row:nth-child(2) .salim-pkg-cta::before {
+  animation-delay: 0.95s;
+}
+.salim-pkg-row:nth-child(2) .salim-pkg-cta::after {
+  animation-delay: 0.95s;
+}
+.salim-pkg-row:nth-child(3) .salim-pkg-cta::before {
+  animation-delay: 1.9s;
+}
+.salim-pkg-row:nth-child(3) .salim-pkg-cta::after {
+  animation-delay: 1.9s;
+}
+
+.salim-pkg-cta:focus-visible {
+  outline: 2px solid #fef08a;
+  outline-offset: 2px;
+}
+
+.salim-pkg-row:hover .salim-pkg-cta,
+.salim-pkg-cta:hover {
+  transform: scale(1.025);
+  filter: brightness(1.07);
+  border-color: rgba(254, 249, 195, 0.95) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 252, 236, 0.90),
+    0 0 24px rgba(253, 224, 71, 0.68),
+    0 6px 20px rgba(217, 119, 6, 0.48) !important;
+}
+
+.salim-pkg-cta:hover::before {
+  opacity: 0.92;
+}
+
+/* Instant tactile press with immediate surge in light intensity */
+.salim-pkg-row:hover .salim-pkg-cta:active,
+.salim-pkg-cta:active,
+.salim-pkg-row:hover .salim-pkg-cta.is-pressed,
+.salim-pkg-cta.is-pressed {
+  transition-duration: 28ms !important;
+  transform: translate3d(0, 1.5px, 0) scale(0.95) !important;
+  filter: brightness(1.26) contrast(1.06) !important;
+  border-color: #fef9c3 !important;
+  box-shadow:
+    inset 0 2px 5px rgba(82, 48, 5, 0.56),
+    inset 0 0 14px rgba(255, 251, 235, 0.62),
+    0 0 32px rgba(254, 240, 138, 0.94),
+    0 2px 8px rgba(217, 119, 6, 0.56) !important;
+}
+
+.salim-pkg-cta:active::before,
+.salim-pkg-cta.is-pressed::before {
+  opacity: 1 !important;
+  animation-play-state: paused;
+}
+
+.salim-pkg-status-open {
+  background: rgba(6, 78, 59, 0.56);
+  border: 1px solid rgba(52, 211, 153, 0.56);
+  color: #6ee7b7;
+}
+
+.salim-pkg-status-closed {
+  background: rgba(136, 19, 55, 0.52);
+  border: 1px solid rgba(251, 113, 133, 0.54);
+  color: #fda4af;
+}
+
+.salim-ch-section-icon {
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.28);
+}
+
+.salim-ch-count-badge {
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.18);
+}
+
+/* ==========================================================================
+   11.3 OVAL GLASS SEARCH BOX WITH GOLDEN REFLECTION & LIGHT WAVE RIPPLE
+   ========================================================================== */
+.salim-ch-search {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 9999px !important;
+  background: linear-gradient(
+    95deg,
+    rgba(22, 28, 42, 0.64) 0%,
+    rgba(34, 38, 50, 0.60) 48%,
+    rgba(64, 47, 19, 0.56) 100%
+  ) !important;
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+  border: 1px solid rgba(251, 191, 36, 0.58) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 243, 199, 0.22),
+    inset 0 -1px 0 rgba(245, 158, 11, 0.10),
+    0 0 20px rgba(245, 158, 11, 0.18),
+    0 8px 22px rgba(0, 0, 0, 0.52) !important;
+  -webkit-transition: border-color 0.22s ease, box-shadow 0.24s ease, -webkit-transform 0.16s ease;
+  transition: border-color 0.22s ease, box-shadow 0.24s ease, transform 0.16s ease;
+}
+
+.salim-ch-search-sheen {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  left: -20%;
+  width: 44%;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(251, 191, 36, 0.16) 45%,
+    rgba(254, 249, 195, 0.26) 52%,
+    rgba(251, 191, 36, 0.12) 62%,
+    transparent 100%
+  );
+  -webkit-animation: salimSearchSheenSweep 5.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: salimSearchSheenSweep 5.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.salim-ch-search-wave {
+  position: absolute;
+  top: -35%;
+  bottom: -35%;
+  left: 22%;
+  width: 56%;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    ellipse 60% 55% at 50% 50%,
+    rgba(254, 240, 138, 0.26) 0%,
+    rgba(251, 191, 36, 0.14) 45%,
+    transparent 76%
+  );
+  -webkit-animation: salimSearchWaveRipple 4.4s ease-in-out infinite;
+  animation: salimSearchWaveRipple 4.4s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.salim-ch-search-icon-frame {
+  background: linear-gradient(135deg, rgba(46, 36, 16, 0.72) 0%, rgba(19, 25, 40, 0.84) 100%);
+  border: 1px solid rgba(251, 191, 36, 0.56);
+  box-shadow:
+    inset 0 1px 0 rgba(254, 243, 199, 0.25),
+    0 0 12px rgba(245, 158, 11, 0.22);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.salim-ch-search:focus-within {
+  border-color: rgba(253, 224, 71, 0.92) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 249, 195, 0.34),
+    0 0 28px rgba(251, 191, 36, 0.42),
+    0 8px 26px rgba(0, 0, 0, 0.65) !important;
+}
+
+.salim-ch-search:focus-within .salim-ch-search-icon-frame {
+  border-color: rgba(254, 240, 138, 0.88);
+  box-shadow:
+    inset 0 1px 0 rgba(254, 249, 195, 0.40),
+    0 0 16px rgba(251, 191, 36, 0.45);
+  transform: scale(1.04);
+}
+
+.salim-ch-search:active {
+  transform: scale(0.996);
+}
+
+/* ==========================================================================
+   11.4 CHANNELS GRID & ELECTRIC ARC CARD CONTAINERS
+   ========================================================================== */
+.salim-channels-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (min-width: 350px) {
+  .salim-channels-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 640px) {
+  .salim-channels-grid {
+    gap: 0.875rem;
+  }
+}
+
+.salim-ch-card {
+  position: relative;
+  overflow: visible;
+  min-height: 92px;
+  background: linear-gradient(145deg, rgba(16, 24, 42, 0.72) 0%, rgba(9, 14, 27, 0.82) 65%, rgba(18, 22, 36, 0.74) 100%) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(251, 191, 36, 0.42) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 243, 199, 0.14),
+    0 10px 26px rgba(0, 0, 0, 0.68),
+    0 0 14px rgba(245, 158, 11, 0.10) !important;
+  -webkit-transition: -webkit-transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease, box-shadow 0.28s ease;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease, box-shadow 0.28s ease;
+  -webkit-animation: salimCardReveal 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: salimCardReveal 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.salim-ch-card-clip {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.salim-ch-card-sheen {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  inset: 0;
+  background: linear-gradient(125deg, rgba(254, 243, 199, 0.06) 0%, transparent 45%, rgba(251, 191, 36, 0.04) 100%);
+  pointer-events: none;
+}
+
+.salim-ch-electric-slot {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  bottom: -10px;
+  left: -10px;
+  inset: -10px;
+  pointer-events: none;
+  z-index: 25;
+}
+
+.salim-electric-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.salim-ch-card-featured {
+  background: linear-gradient(145deg, rgba(28, 24, 18, 0.76) 0%, rgba(11, 15, 28, 0.84) 55%, rgba(30, 22, 12, 0.76) 100%) !important;
+  border: 1.5px solid rgba(253, 224, 71, 0.72) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 249, 195, 0.28),
+    0 12px 28px rgba(0, 0, 0, 0.72),
+    0 0 22px rgba(245, 158, 11, 0.24) !important;
+}
+
+.salim-ch-card-warm {
+  border-color: rgba(251, 146, 60, 0.50) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 215, 170, 0.16),
+    0 10px 26px rgba(0, 0, 0, 0.68),
+    0 0 16px rgba(249, 115, 22, 0.14) !important;
+}
+
+.salim-ch-card-emerald {
+  border-color: rgba(251, 191, 36, 0.52) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(167, 243, 208, 0.15),
+    0 10px 26px rgba(0, 0, 0, 0.68),
+    0 0 16px rgba(16, 185, 129, 0.14) !important;
+}
+
+.salim-ch-card-energized {
+  border-color: rgba(254, 240, 138, 0.92) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 249, 195, 0.36),
+    inset 0 0 18px rgba(251, 191, 36, 0.14),
+    0 12px 30px rgba(0, 0, 0, 0.76),
+    0 0 28px rgba(251, 191, 36, 0.44) !important;
+}
+
+.salim-ch-card:hover {
+  border-color: rgba(253, 224, 71, 0.86) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 249, 195, 0.26),
+    0 14px 32px rgba(0, 0, 0, 0.78),
+    0 0 24px rgba(251, 191, 36, 0.28) !important;
+}
+
+.salim-ch-card:active {
+  transform: scale(0.972);
+  border-color: #fde047 !important;
+  box-shadow:
+    inset 0 0 18px rgba(251, 191, 36, 0.22),
+    0 0 30px rgba(251, 191, 36, 0.48) !important;
+}
+
+.salim-ch-orb {
+  position: absolute;
+  top: -2.25rem;
+  right: -2.25rem;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 9999px;
+  pointer-events: none;
+  opacity: 0.72;
+  transition: opacity 0.2s ease;
+}
+
+.salim-ch-card:hover .salim-ch-orb {
+  opacity: 1;
+}
+
+.salim-ch-orb-gold {
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.22) 0%, rgba(251, 191, 36, 0.08) 45%, transparent 72%);
+}
+
+.salim-ch-orb-emerald {
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.18) 0%, rgba(52, 211, 153, 0.06) 45%, transparent 72%);
+}
+
+.salim-ch-avatar-ring {
+  padding: 2px;
+  background: linear-gradient(145deg, #fef08a 0%, #fbbf24 42%, #92400e 78%, #fcd34d 100%);
+  box-shadow: 0 4px 18px rgba(245, 158, 11, 0.42), 0 0 12px rgba(251, 191, 36, 0.25);
+}
+
+.salim-ch-name {
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+@media (min-width: 640px) {
+  .salim-ch-name {
+    font-size: 15px;
+  }
+}
+
+.salim-ch-active-glow {
+  background: rgba(2, 44, 34, 0.9);
+  border: 1px solid rgba(52, 211, 153, 0.58);
+  color: #6ee7b7;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.34);
+}
+
+.salim-pm-spotlight {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(115deg, rgba(48, 33, 8, 0.88) 0%, rgba(132, 92, 18, 0.62) 46%, rgba(34, 24, 7, 0.90) 100%) !important;
+  border: 1.5px solid rgba(252, 211, 77, 0.80) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 249, 195, 0.38),
+    0 14px 34px rgba(0, 0, 0, 0.78),
+    0 0 28px rgba(245, 158, 11, 0.30) !important;
+  -webkit-transition: -webkit-transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+  -webkit-animation: salimCardReveal 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+  animation: salimCardReveal 0.46s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+}
+
+.salim-pm-spotlight::after {
+  content: "";
+  position: absolute;
+  top: -30%;
+  bottom: -30%;
+  left: -30%;
+  width: 34%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent 0%, rgba(254, 249, 195, 0.24) 50%, transparent 100%);
+  -webkit-animation: salimPmSheen 5.6s ease-in-out infinite;
+  animation: salimPmSheen 5.6s ease-in-out infinite;
+}
+
+.salim-pm-spotlight:hover {
+  border-color: #fde047 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 249, 195, 0.50),
+    0 16px 38px rgba(0, 0, 0, 0.86),
+    0 0 34px rgba(251, 191, 36, 0.44) !important;
+}
+
+.salim-pm-spotlight:active {
+  transform: scale(0.985);
+}
+
+.salim-pm-icon-box {
+  background: rgba(25, 18, 5, 0.82);
+  border: 1px solid rgba(252, 211, 77, 0.65);
+  box-shadow: 0 0 18px rgba(251, 191, 36, 0.45);
+}
+
+.salim-pm-arrow-btn {
+  background: rgba(25, 18, 5, 0.75);
+  border: 1px solid rgba(252, 211, 77, 0.6);
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
+}
+
+/* ==========================================================================
+   11.5 BOTTOM NAVIGATION DOCK — TRAVELING GOLDEN ENERGY & SPARKS
+   ========================================================================== */
+nav.sticky.bottom-0.salim-nav-dock,
+.salim-nav-dock {
+  background: linear-gradient(180deg, rgba(10, 16, 30, 0.94) 0%, rgba(5, 8, 17, 0.98) 100%) !important;
+  border-top: 1px solid rgba(251, 191, 36, 0.44) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(254, 243, 199, 0.16),
+    0 -12px 34px rgba(0, 0, 0, 0.88) !important;
+}
+
+.salim-nav-inner {
+  position: relative;
+}
+
+/* Traveling golden energy aura + bottom bar smoothly glides between tabs */
+.salim-nav-traveler {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transform: translate3d(0, 0, 0);
+  transition: transform 330ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
+  will-change: transform, opacity;
+}
+
+.salim-nav-traveler.no-transition {
+  transition: none !important;
+}
+
+.salim-nav-traveler-aura {
+  position: absolute;
+  top: -8px;
+  left: -26px;
+  width: 52px;
+  height: 46px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(254, 240, 138, 0.32) 0%, rgba(251, 191, 36, 0.16) 52%, transparent 78%);
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), opacity 240ms ease;
+}
+
+.salim-nav-traveler.is-traveling .salim-nav-traveler-aura {
+  transform: scaleX(1.38) scaleY(0.92);
+  opacity: 0.95;
+}
+
+.salim-nav-traveler-bar {
+  position: absolute;
+  bottom: 0;
+  left: -17px;
+  width: 34px;
+  height: 3.5px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #fde68a 0%, #fbbf24 50%, #f59e0b 100%);
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.95), 0 0 6px rgba(254, 249, 195, 0.8);
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.salim-nav-traveler.is-traveling .salim-nav-traveler-bar {
+  transform: scaleX(1.32);
+}
+
+.salim-nav-tab {
+  position: relative;
+  z-index: 2;
+  min-height: 44px;
+  min-width: 44px;
+  transition: color 240ms ease, transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.salim-nav-halo {
+  top: -0.35rem;
+  width: 2.9rem;
+  height: 2.9rem;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.34) 0%, rgba(245, 158, 11, 0.14) 48%, transparent 78%);
+  -webkit-transition: opacity 280ms ease, -webkit-transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 280ms ease, transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.salim-nav-halo-active {
+  opacity: 1;
+  -webkit-transform: scale3d(1.06, 1.06, 1);
+  transform: scale3d(1.06, 1.06, 1);
+}
+
+.salim-nav-halo-idle {
+  opacity: 0;
+  -webkit-transform: scale3d(0.5, 0.5, 1);
+  transform: scale3d(0.5, 0.5, 1);
+}
+
+.salim-nav-icon-wrap {
+  -webkit-transition: -webkit-transform 260ms cubic-bezier(0.22, 1, 0.36, 1), color 220ms ease;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), color 220ms ease;
+}
+
+.salim-nav-icon-wrap.is-active {
+  -webkit-transform: scale3d(1.13, 1.13, 1) translate3d(0, -1px, 0);
+  transform: scale3d(1.13, 1.13, 1) translate3d(0, -1px, 0);
+}
+
+.salim-nav-icon-active {
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.72));
+}
+
+/* Sweeping golden light orbit around the selected nav icon */
+.salim-nav-orbit {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  bottom: -6px;
+  left: -6px;
+  inset: -6px;
+  border-radius: 9999px;
+  pointer-events: none;
+  opacity: 0;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(254, 240, 138, 0.82) 50deg,
+    rgba(251, 191, 36, 0.25) 115deg,
+    transparent 175deg,
+    transparent 360deg
+  );
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
+  transition: opacity 240ms ease;
+}
+
+.salim-nav-orbit.is-active {
+  opacity: 0.92;
+  -webkit-animation: salimNavOrbitSpin 3.6s linear infinite;
+  animation: salimNavOrbitSpin 3.6s linear infinite;
+}
+
+.salim-nav-tab.is-just-activated .salim-nav-orbit.is-active::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  bottom: -2px;
+  left: -2px;
+  inset: -2px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(254, 240, 138, 0.85);
+  -webkit-animation: salimNavBurstRing 380ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: salimNavBurstRing 380ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Lightweight golden sparks around the active nav icon */
+.salim-nav-sparks {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -8px;
+  inset: -8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.salim-nav-sparks.is-active {
+  opacity: 1;
+}
+
+.salim-nav-sparks i {
+  position: absolute;
+  width: 2.5px;
+  height: 2.5px;
+  border-radius: 9999px;
+  background: #fef08a;
+  box-shadow: 0 0 6px rgba(251, 191, 36, 0.95);
+  opacity: 0;
+}
+
+.salim-nav-sparks.is-active i {
+  -webkit-animation: salimNavSparkRise 2.2s ease-out infinite;
+  animation: salimNavSparkRise 2.2s ease-out infinite;
+}
+
+.salim-nav-sparks i:nth-child(1) {
+  left: 14%;
+  top: 42%;
+  --sx: -5px;
+  animation-delay: 0s;
+}
+.salim-nav-sparks i:nth-child(2) {
+  right: 12%;
+  top: 38%;
+  --sx: 6px;
+  animation-delay: 0.55s;
+}
+.salim-nav-sparks i:nth-child(3) {
+  left: 48%;
+  top: 10%;
+  --sx: 2px;
+  animation-delay: 1.1s;
+}
+.salim-nav-sparks i:nth-child(4) {
+  left: 24%;
+  top: 18%;
+  --sx: -4px;
+  animation-delay: 1.55s;
+}
+.salim-nav-sparks i:nth-child(5) {
+  right: 22%;
+  top: 16%;
+  --sx: 4px;
+  animation-delay: 0.85s;
+}
+
+.salim-nav-label-active {
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.58);
+}
+
+.salim-nav-indicator {
+  height: 3px;
+  width: 2rem;
+  border-radius: 9999px;
+  transform-origin: center;
+  transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms ease;
+}
+
+.salim-nav-indicator-active {
+  transform: scaleX(1);
+  opacity: 0.95;
+  background: linear-gradient(90deg, #fde68a 0%, #fbbf24 50%, #f59e0b 100%);
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.85);
+}
+
+.salim-nav-indicator-idle {
+  transform: scaleX(0);
+  opacity: 0;
+}
+
+/* ==========================================================================
+   11.6 ADAPTIVE GPU-SAFE COMPOSITING (2-3GB RAM / MALI-T720 / MALI-G52)
+   Keeps 100% of animations, colors, and golden effects ACTIVE while dropping
+   expensive per-frame backdrop-filter/filter blurs that stall low-VRAM GPUs.
+   ========================================================================== */
+.salim-fx-balanced .salim-nav-sparks i:nth-child(n + 5),
+.salim-fx-compat .salim-nav-sparks i:nth-child(n + 4) {
+  display: none;
+}
+
+.sami-legacy-android .salim-royal-header,
+.sami-legacy-android .salim-pkg-panel,
+.sami-legacy-android .salim-ch-search,
+.sami-legacy-android .salim-ch-card,
+.sami-legacy-android .salim-nav-dock,
+.sami-gpu-safe .salim-royal-header,
+.sami-gpu-safe .salim-pkg-panel,
+.sami-gpu-safe .salim-ch-search,
+.sami-gpu-safe .salim-ch-card,
+.sami-gpu-safe .salim-nav-dock,
+.sami-gpu-safe .backdrop-blur-md,
+.sami-gpu-safe .backdrop-blur-sm,
+.sami-gpu-safe .backdrop-blur-xl,
+.sami-gpu-safe .backdrop-blur-xs {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.sami-gpu-safe .salim-nav-icon-active {
+  filter: none !important;
+}
+
+.sami-legacy-android .salim-pkg-panel,
+.sami-gpu-safe .salim-pkg-panel {
+  background: linear-gradient(155deg, rgba(16, 24, 42, 0.90) 0%, rgba(10, 16, 30, 0.94) 100%) !important;
+}
+
+.sami-legacy-android .salim-pkg-row,
+.sami-gpu-safe .salim-pkg-row {
+  background: linear-gradient(125deg, rgba(22, 31, 52, 0.90) 0%, rgba(13, 19, 34, 0.94) 100%) !important;
+}
+
+.sami-legacy-android .salim-ch-search,
+.sami-gpu-safe .salim-ch-search {
+  background: linear-gradient(95deg, rgba(16, 23, 38, 0.92) 0%, rgba(44, 34, 15, 0.88) 100%) !important;
+}
+
+/* ==========================================================================
+   12. CROSS-ANDROID WEBVIEW ANIMATION, TRANSFORM & GPU COMPATIBILITY LAYER
+   Supports: Android 7.0 (LG K20 Plus / Mali-T720 / 2GB), Galaxy S8,
+   Galaxy A13 (Mali-G52 / G57), and newer Android WebViews.
+   ========================================================================== */
+@-webkit-keyframes samiFadeIn {
+  from { opacity: 0; -webkit-transform: translate3d(0, 6px, 0); transform: translate3d(0, 6px, 0); }
+  to { opacity: 1; -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+}
+@keyframes samiFadeIn {
+  from { opacity: 0; -webkit-transform: translate3d(0, 6px, 0); transform: translate3d(0, 6px, 0); }
+  to { opacity: 1; -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+}
+
+@-webkit-keyframes samiFadeOnly {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes samiFadeOnly {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@-webkit-keyframes samiSlideFromTop {
+  from { opacity: 0; -webkit-transform: translate3d(0, -14px, 0); transform: translate3d(0, -14px, 0); }
+  to { opacity: 1; -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+}
+@keyframes samiSlideFromTop {
+  from { opacity: 0; -webkit-transform: translate3d(0, -14px, 0); transform: translate3d(0, -14px, 0); }
+  to { opacity: 1; -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+}
+
+@-webkit-keyframes samiSlideFromBottom {
+  from { opacity: 0; -webkit-transform: translate3d(0, 16px, 0); transform: translate3d(0, 16px, 0); }
+  to { opacity: 1; -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+}
+@keyframes samiSlideFromBottom {
+  from { opacity: 0; -webkit-transform: translate3d(0, 16px, 0); transform: translate3d(0, 16px, 0); }
+  to { opacity: 1; -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+}
+
+@-webkit-keyframes samiZoomIn {
+  from { opacity: 0; -webkit-transform: scale3d(0.95, 0.95, 1); transform: scale3d(0.95, 0.95, 1); }
+  to { opacity: 1; -webkit-transform: scale3d(1, 1, 1); transform: scale3d(1, 1, 1); }
+}
+@keyframes samiZoomIn {
+  from { opacity: 0; -webkit-transform: scale3d(0.95, 0.95, 1); transform: scale3d(0.95, 0.95, 1); }
+  to { opacity: 1; -webkit-transform: scale3d(1, 1, 1); transform: scale3d(1, 1, 1); }
+}
+
+@-webkit-keyframes samiShakeCompat {
+  0%, 100% { -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+  20%, 60% { -webkit-transform: translate3d(-5px, 0, 0); transform: translate3d(-5px, 0, 0); }
+  40%, 80% { -webkit-transform: translate3d(5px, 0, 0); transform: translate3d(5px, 0, 0); }
+}
+@keyframes samiShakeCompat {
+  0%, 100% { -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+  20%, 60% { -webkit-transform: translate3d(-5px, 0, 0); transform: translate3d(-5px, 0, 0); }
+  40%, 80% { -webkit-transform: translate3d(5px, 0, 0); transform: translate3d(5px, 0, 0); }
+}
+
+@-webkit-keyframes samiPingCompat {
+  0% { -webkit-transform: scale3d(1, 1, 1); transform: scale3d(1, 1, 1); opacity: 0.85; }
+  75%, 100% { -webkit-transform: scale3d(2, 2, 1); transform: scale3d(2, 2, 1); opacity: 0; }
+}
+@keyframes samiPingCompat {
+  0% { -webkit-transform: scale3d(1, 1, 1); transform: scale3d(1, 1, 1); opacity: 0.85; }
+  75%, 100% { -webkit-transform: scale3d(2, 2, 1); transform: scale3d(2, 2, 1); opacity: 0; }
+}
+
+@-webkit-keyframes samiBounceCompat {
+  0%, 100% { -webkit-transform: translate3d(0, -18%, 0); transform: translate3d(0, -18%, 0); }
+  50% { -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+}
+@keyframes samiBounceCompat {
+  0%, 100% { -webkit-transform: translate3d(0, -18%, 0); transform: translate3d(0, -18%, 0); }
+  50% { -webkit-transform: translate3d(0, 0, 0); transform: translate3d(0, 0, 0); }
+}
+
+@-webkit-keyframes samiSpinCompat {
+  from { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+@keyframes samiSpinCompat {
+  from { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
+}
+
+@-webkit-keyframes samiPulseCompat {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+@keyframes samiPulseCompat {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+@-webkit-keyframes samiProgressShimmerCompat {
+  0% { -webkit-transform: translate3d(100%, 0, 0); transform: translate3d(100%, 0, 0); }
+  100% { -webkit-transform: translate3d(-100%, 0, 0); transform: translate3d(-100%, 0, 0); }
+}
+@keyframes samiProgressShimmerCompat {
+  0% { -webkit-transform: translate3d(100%, 0, 0); transform: translate3d(100%, 0, 0); }
+  100% { -webkit-transform: translate3d(-100%, 0, 0); transform: translate3d(-100%, 0, 0); }
+}
+
+.animate-in {
+  -webkit-animation: samiFadeIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: samiFadeIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.animate-in.fade-in {
+  -webkit-animation: samiFadeOnly 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: samiFadeOnly 200ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-in.slide-in-from-top,
+.animate-in.slide-in-from-top-2 {
+  -webkit-animation: samiSlideFromTop 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: samiSlideFromTop 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-in.slide-in-from-bottom,
+.animate-in.slide-in-from-bottom-2,
+.animate-in.slide-in-from-bottom-4 {
+  -webkit-animation: samiSlideFromBottom 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: samiSlideFromBottom 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-in.zoom-in,
+.animate-in.zoom-in-95 {
+  -webkit-animation: samiZoomIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: samiZoomIn 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-in.shake {
+  -webkit-animation: samiShakeCompat 240ms ease-in-out both;
+  animation: samiShakeCompat 240ms ease-in-out both;
+}
+
+.animate-in.duration-75 { -webkit-animation-duration: 75ms; animation-duration: 75ms; }
+.animate-in.duration-150 { -webkit-animation-duration: 150ms; animation-duration: 150ms; }
+.animate-in.duration-200 { -webkit-animation-duration: 200ms; animation-duration: 200ms; }
+.animate-in.duration-300 { -webkit-animation-duration: 300ms; animation-duration: 300ms; }
+.animate-in.duration-500 { -webkit-animation-duration: 500ms; animation-duration: 500ms; }
+.animate-in.duration-700 { -webkit-animation-duration: 700ms; animation-duration: 700ms; }
+
+.animate-spin {
+  -webkit-animation: samiSpinCompat 1s linear infinite !important;
+  animation: samiSpinCompat 1s linear infinite !important;
+}
+
+.animate-pulse {
+  -webkit-animation: samiPulseCompat 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+  animation: samiPulseCompat 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+}
+
+.animate-bounce {
+  -webkit-animation: samiBounceCompat 1s infinite !important;
+  animation: samiBounceCompat 1s infinite !important;
+}
+
+.animate-ping {
+  -webkit-animation: samiPingCompat 1.2s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+  animation: samiPingCompat 1.2s cubic-bezier(0, 0, 0.2, 1) infinite !important;
+}
+
+.progress-shimmer-bar {
+  -webkit-animation: samiProgressShimmerCompat 2.4s linear infinite !important;
+  animation: samiProgressShimmerCompat 2.4s linear infinite !important;
+}
+
+/* Unlayered transitions for WebView < 99 (Android 7.0-11 lacking @layer) */
+.transition {
+  -webkit-transition-property: color, background-color, border-color, opacity, box-shadow, -webkit-transform;
+  transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+  -webkit-transition-duration: 150ms;
+  transition-duration: 150ms;
+  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.transition-all {
+  -webkit-transition-property: all;
+  transition-property: all;
+  -webkit-transition-duration: 150ms;
+  transition-duration: 150ms;
+  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.transition-colors {
+  -webkit-transition-property: color, background-color, border-color;
+  transition-property: color, background-color, border-color;
+  -webkit-transition-duration: 150ms;
+  transition-duration: 150ms;
+}
+.transition-opacity {
+  -webkit-transition-property: opacity;
+  transition-property: opacity;
+  -webkit-transition-duration: 150ms;
+  transition-duration: 150ms;
+}
+.transition-transform {
+  -webkit-transition-property: -webkit-transform, transform;
+  transition-property: transform;
+  -webkit-transition-duration: 150ms;
+  transition-duration: 150ms;
+}
+.duration-75 { -webkit-transition-duration: 75ms; transition-duration: 75ms; }
+.duration-150 { -webkit-transition-duration: 150ms; transition-duration: 150ms; }
+.duration-200 { -webkit-transition-duration: 200ms; transition-duration: 200ms; }
+.duration-300 { -webkit-transition-duration: 300ms; transition-duration: 300ms; }
+.duration-500 { -webkit-transition-duration: 500ms; transition-duration: 500ms; }
+.duration-700 { -webkit-transition-duration: 700ms; transition-duration: 700ms; }
+.ease-out { -webkit-transition-timing-function: cubic-bezier(0, 0, 0.2, 1); transition-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+
+/* Instant tactile feedback for touchscreens (Android WebView) */
+button,
+[role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Guarantee clean GPU compositing ONLY for dedicated animated FX layers without fighting keyframe transforms */
+.salim-nav-traveler,
+.salim-nav-orbit,
+.salim-ch-search-sheen,
+.salim-ch-search-wave,
+.salim-gold-dust-layer,
+.salim-gold-trail {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Fallback for older Android WebViews without CSS `translate:`/`scale:`/`rotate:` individual properties (< Chrome 104) */
+@supports not (translate: 0px) {
+  .-translate-x-1\/2 {
+    -webkit-transform: translate3d(-50%, 0, 0) !important;
+    transform: translate3d(-50%, 0, 0) !important;
+  }
+  .-translate-y-1\/2 {
+    -webkit-transform: translate3d(0, -50%, 0) !important;
+    transform: translate3d(0, -50%, 0) !important;
+  }
+  .-translate-x-6 {
+    -webkit-transform: translate3d(-1.5rem, 0, 0) !important;
+    transform: translate3d(-1.5rem, 0, 0) !important;
+  }
+  .translate-x-full {
+    -webkit-transform: translate3d(100%, 0, 0) !important;
+    transform: translate3d(100%, 0, 0) !important;
+  }
+  .translate-x-0,
+  .translate-y-0 {
+    -webkit-transform: translate3d(0, 0, 0) !important;
+    transform: translate3d(0, 0, 0) !important;
+  }
+  .active\:scale-90:active {
+    -webkit-transform: scale3d(0.9, 0.9, 1) !important;
+    transform: scale3d(0.9, 0.9, 1) !important;
+  }
+  .active\:scale-95:active {
+    -webkit-transform: scale3d(0.95, 0.95, 1) !important;
+    transform: scale3d(0.95, 0.95, 1) !important;
+  }
+  .active\:scale-98:active,
+  .active\:scale-\[0\.98\]:active {
+    -webkit-transform: scale3d(0.98, 0.98, 1) !important;
+    transform: scale3d(0.98, 0.98, 1) !important;
+  }
+  .active\:scale-\[0\.99\]:active {
+    -webkit-transform: scale3d(0.99, 0.99, 1) !important;
+    transform: scale3d(0.99, 0.99, 1) !important;
+  }
+  .scale-105 {
+    -webkit-transform: scale3d(1.05, 1.05, 1) !important;
+    transform: scale3d(1.05, 1.05, 1) !important;
+  }
+  .scale-110 {
+    -webkit-transform: scale3d(1.1, 1.1, 1) !important;
+    transform: scale3d(1.1, 1.1, 1) !important;
+  }
+  .scale-\[1\.01\] {
+    -webkit-transform: scale3d(1.01, 1.01, 1) !important;
+    transform: scale3d(1.01, 1.01, 1) !important;
+  }
+  .rotate-45 {
+    -webkit-transform: rotate(45deg) !important;
+    transform: rotate(45deg) !important;
+  }
+  .rotate-180 {
+    -webkit-transform: rotate(180deg) !important;
+    transform: rotate(180deg) !important;
+  }
+}
+
+.sami-no-css-translate .-translate-x-1\/2 {
+  -webkit-transform: translate3d(-50%, 0, 0) !important;
+  transform: translate3d(-50%, 0, 0) !important;
+}
+.sami-no-css-translate .-translate-y-1\/2 {
+  -webkit-transform: translate3d(0, -50%, 0) !important;
+  transform: translate3d(0, -50%, 0) !important;
+}
+.sami-no-css-translate .-translate-x-6 {
+  -webkit-transform: translate3d(-1.5rem, 0, 0) !important;
+  transform: translate3d(-1.5rem, 0, 0) !important;
+}
+.sami-no-css-translate .translate-x-full {
+  -webkit-transform: translate3d(100%, 0, 0) !important;
+  transform: translate3d(100%, 0, 0) !important;
+}
+.sami-no-css-translate .translate-x-0,
+.sami-no-css-translate .translate-y-0 {
+  -webkit-transform: translate3d(0, 0, 0) !important;
+  transform: translate3d(0, 0, 0) !important;
+}
+.sami-no-css-translate .active\:scale-90:active {
+  -webkit-transform: scale3d(0.9, 0.9, 1) !important;
+  transform: scale3d(0.9, 0.9, 1) !important;
+}
+.sami-no-css-translate .active\:scale-95:active {
+  -webkit-transform: scale3d(0.95, 0.95, 1) !important;
+  transform: scale3d(0.95, 0.95, 1) !important;
+}
+.sami-no-css-translate .active\:scale-98:active,
+.sami-no-css-translate .active\:scale-\[0\.98\]:active {
+  -webkit-transform: scale3d(0.98, 0.98, 1) !important;
+  transform: scale3d(0.98, 0.98, 1) !important;
+}
+.sami-no-css-translate .active\:scale-\[0\.99\]:active {
+  -webkit-transform: scale3d(0.99, 0.99, 1) !important;
+  transform: scale3d(0.99, 0.99, 1) !important;
+}
+.sami-no-css-translate .hover\:scale-\[1\.01\]:hover {
+  -webkit-transform: scale3d(1.01, 1.01, 1) !important;
+  transform: scale3d(1.01, 1.01, 1) !important;
+}
+.sami-no-css-translate .hover\:scale-105:hover,
+.sami-no-css-translate .group:hover .group-hover\:scale-105 {
+  -webkit-transform: scale3d(1.05, 1.05, 1) !important;
+  transform: scale3d(1.05, 1.05, 1) !important;
+}
+.sami-no-css-translate .group:hover .group-hover\:translate-x-\[-2px\] {
+  -webkit-transform: translate3d(-2px, 0, 0) !important;
+  transform: translate3d(-2px, 0, 0) !important;
+}
+.sami-no-css-translate .scale-105 {
+  -webkit-transform: scale3d(1.05, 1.05, 1) !important;
+  transform: scale3d(1.05, 1.05, 1) !important;
+}
+.sami-no-css-translate .scale-110 {
+  -webkit-transform: scale3d(1.1, 1.1, 1) !important;
+  transform: scale3d(1.1, 1.1, 1) !important;
+}
+.sami-no-css-translate .scale-\[1\.01\] {
+  -webkit-transform: scale3d(1.01, 1.01, 1) !important;
+  transform: scale3d(1.01, 1.01, 1) !important;
+}
+.sami-no-css-translate .rotate-45 {
+  -webkit-transform: rotate(45deg) !important;
+  transform: rotate(45deg) !important;
+}
+.sami-no-css-translate .rotate-180 {
+  -webkit-transform: rotate(180deg) !important;
+  transform: rotate(180deg) !important;
+}
+
+/* Mask & conic-gradient fallback for `.salim-nav-orbit` on Android 7.0+ WebViews */
+.sami-no-css-mask .salim-nav-orbit,
+.sami-no-conic .salim-nav-orbit {
+  background: transparent !important;
+  border: 1.5px solid rgba(251, 191, 36, 0.36) !important;
+  border-top-color: rgba(254, 240, 138, 0.95) !important;
+  border-right-color: rgba(251, 191, 36, 0.72) !important;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.35);
+}
+
+
+
+
