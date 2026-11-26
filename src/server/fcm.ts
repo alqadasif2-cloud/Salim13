@@ -8,15 +8,15 @@ const require = createRequire(import.meta.url);
 const webpush = require('web-push') as typeof webpushType;
 import {
   firestoreClient,
-  projectId,
   getChannelById,
   getAllUsersList,
   isChannelOpenPublic,
   isFirestoreRestBackoffActive,
   handleFirestoreQuotaOrError,
 } from './db.ts';
+import { getMessaging } from 'firebase-admin/messaging';
 import {
-  getGcpAdminAccessToken,
+  getFirebaseAdminApp,
   adminFirestoreListCollection,
   adminFirestoreSetDoc,
   adminFirestoreDeleteDoc,
@@ -838,10 +838,6 @@ export async function unregisterDeviceToken(
   }
 }
 
-async function getGcpAccessToken(): Promise<string | null> {
-  return getGcpAdminAccessToken();
-}
-
 function resolveAndroidChannelId(data: Record<string, string>): string {
   if (data.type === 'app_update') return 'sami_app_updates_v2';
   if (data.chatType === 'private') return 'sami_private_messages_v2';
@@ -856,70 +852,80 @@ async function sendAndroidFcmV1(
     data: Record<string, string>;
   }
 ): Promise<{ ok: boolean; unreg?: boolean; transient?: boolean; error?: string }> {
-  const accessToken = await getGcpAccessToken();
-  if (!accessToken || !projectId) {
-    return { ok: false, transient: true, error: 'gcp_access_token_unavailable' };
+  const adminApp = getFirebaseAdminApp();
+  if (!adminApp) {
+    return { ok: false, transient: false, error: 'firebase_admin_adc_unavailable' };
   }
 
   const androidChannelId = resolveAndroidChannelId(payload.data);
 
   try {
-    const res = await fetch(
-      `https://fcm.googleapis.com/v1/projects/${encodeURIComponent(projectId)}/messages:send`,
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+    await getMessaging(adminApp).send({
+      token: fcmToken,
+      notification: {
+        title: payload.title,
+        body: payload.body,
+      },
+      data: payload.data,
+      android: {
+        priority: 'high',
+        ttl: 86400 * 1000,
+        collapseKey:
+          payload.data.chatType === 'private'
+            ? `salim_pm_${payload.data.partnerId || payload.data.senderId || 'chat'}`
+            : `salim_ch_${payload.data.channelId || 'general'}`,
+        notification: {
+          channelId: androidChannelId,
+          clickAction: 'OPEN_SAMI_CHAT',
+          priority: 'high',
+          visibility: 'public',
+          defaultSound: true,
+          defaultVibrateTimings: true,
+          tag: payload.data.messageId ? `salim-msg-${payload.data.messageId}` : undefined,
         },
-        body: JSON.stringify({
-          message: {
-            token: fcmToken,
-            notification: {
-              title: payload.title,
-              body: payload.body,
-            },
-            data: payload.data,
-            android: {
-              priority: 'HIGH',
-              ttl: '86400s',
-              collapse_key:
-                payload.data.chatType === 'private'
-                  ? `salim_pm_${payload.data.partnerId || payload.data.senderId || 'chat'}`
-                  : `salim_ch_${payload.data.channelId || 'general'}`,
-              notification: {
-                channel_id: androidChannelId,
-                click_action: 'OPEN_SAMI_CHAT',
-                notification_priority: 'PRIORITY_HIGH',
-                visibility: 'PUBLIC',
-                default_sound: true,
-                default_vibrate_timings: true,
-                tag: payload.data.messageId ? `salim-msg-${payload.data.messageId}` : undefined,
-              },
-            },
-          },
-        }),
-        signal: AbortSignal.timeout(6000),
-      }
-    );
+      },
+    });
 
-    if (res.ok) return { ok: true };
-    const text = await res.text().catch(() => '');
-    console.warn(`[Salim FCM v1] Delivery failed status=${res.status}: ${text.slice(0, 180)}`);
-    if (
-      res.status === 404 ||
-      res.status === 410 ||
-      text.includes('UNREGISTERED') ||
-      text.includes('Requested entity was not found') ||
-      text.includes('MismatchSenderId')
-    ) {
-      return { ok: false, unreg: true, error: text.slice(0, 160) };
-    }
-    const isTransient = res.status >= 500 || res.status === 429 || res.status === 408;
-    return { ok: false, transient: isTransient, error: `fcm_${res.status}` };
+    return { ok: true };
   } catch (err: any) {
-    console.warn('[Salim FCM v1] Network error:', err?.message || err);
-    return { ok: false, transient: true, error: String(err?.message || 'fcm_network_error') };
+    const code = String(err?.code || '');
+    const msg = String(err?.message || code || 'fcm_admin_error');
+    console.warn(`[Salim FCM Admin SDK] Delivery failed (${code}): ${msg.slice(0, 180)}`);
+
+    const isPermissionOrAuthError =
+      code === 'messaging/authentication-error' ||
+      code === 'messaging/third-party-auth-error' ||
+      msg.includes('PERMISSION_DENIED') ||
+      msg.includes('cloudmessaging.messages.create') ||
+      msg.includes('403') ||
+      msg.includes('401');
+
+    if (isPermissionOrAuthError) {
+      return { ok: false, transient: false, error: code || 'fcm_permission_denied' };
+    }
+
+    if (
+      code === 'messaging/registration-token-not-registered' ||
+      code === 'messaging/invalid-registration-token' ||
+      code === 'messaging/sender-id-mismatch' ||
+      msg.includes('UNREGISTERED') ||
+      msg.includes('Requested entity was not found') ||
+      msg.includes('MismatchSenderId')
+    ) {
+      return { ok: false, unreg: true, error: code || msg.slice(0, 160) };
+    }
+
+    const isTransient =
+      code === 'messaging/server-unavailable' ||
+      code === 'messaging/internal-error' ||
+      code === 'messaging/quota-exceeded' ||
+      msg.includes('500') ||
+      msg.includes('503') ||
+      msg.includes('429') ||
+      msg.includes('timeout') ||
+      msg.includes('ECONN');
+
+    return { ok: false, transient: isTransient, error: code || msg.slice(0, 160) };
   }
 }
 

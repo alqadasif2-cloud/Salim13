@@ -57,6 +57,28 @@ self.addEventListener('message', (event) => {
     event.waitUntil(saveStandbyConfig(msg.payload));
   } else if (msg.type === 'SALIM_CLEAR_PUSH_STANDBY') {
     event.waitUntil(saveStandbyConfig(null));
+  } else if (msg.type === 'SALIM_SHOW_LOCAL_NOTIFICATION' && msg.payload) {
+    const p = msg.payload;
+    const msgId = p.messageId ? String(p.messageId) : '';
+    if (msgId) {
+      if (recentMessageIds.includes(msgId)) return;
+      recentMessageIds.push(msgId);
+      if (recentMessageIds.length > 80) recentMessageIds.shift();
+    }
+    event.waitUntil(
+      self.registration.showNotification(p.title || 'Salim', {
+        body: p.body || 'وصلتك رسالة جديدة',
+        icon: p.icon || '/icon-192.png',
+        badge: '/icon-192.png',
+        vibrate: [250, 100, 250],
+        silent: false,
+        renotify: true,
+        dir: 'rtl',
+        lang: 'ar',
+        tag: msgId ? `salim-msg-${msgId}` : `salim-msg-${Date.now()}`,
+        data: p.data || { fromNotification: true },
+      }).catch(() => {})
+    );
   } else if (msg.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
@@ -69,7 +91,11 @@ self.addEventListener('pushsubscriptionchange', (event) => {
       try {
         const cfg = await loadStandbyConfig();
         if (!cfg || !cfg.userId) return;
-        const base = typeof cfg.apiBase === 'string' ? cfg.apiBase.replace(/\/+$/, '') : '';
+        let base = typeof cfg.apiBase === 'string' ? cfg.apiBase.trim().replace(/\/+$/, '') : '';
+        if (base && (base.includes('wrwn7qrad4ng4e3ejalosp') || base.includes('puwra2x2ecorh5lpokb4yk') || base.includes('ais-dev-'))) {
+          base = self.location.origin;
+        }
+        if (!base) base = self.location.origin;
         let newSub = event.newSubscription || null;
 
         if (!newSub) {
@@ -89,6 +115,7 @@ self.addEventListener('pushsubscriptionchange', (event) => {
           method: 'POST',
           headers,
           body: JSON.stringify({
+            userId: Number(cfg.userId) || undefined,
             token: newSub.endpoint,
             deviceId: cfg.deviceId || 'web_sw',
             platform: 'web',
@@ -96,6 +123,7 @@ self.addEventListener('pushsubscriptionchange', (event) => {
           }),
         });
         cfg.subscription = typeof newSub.toJSON === 'function' ? newSub.toJSON() : null;
+        cfg.apiBase = base;
         cfg.updatedAt = Date.now();
         await saveStandbyConfig(cfg);
       } catch {}
@@ -155,7 +183,7 @@ self.addEventListener('push', (event) => {
     body,
     icon: payloadData.icon || data.icon || '/icon-192.png',
     badge: '/icon-192.png',
-    vibrate: [200, 100, 200],
+    vibrate: [250, 100, 250],
     silent: false,
     requireInteraction: false,
     dir: 'rtl',
@@ -174,7 +202,11 @@ self.addEventListener('push', (event) => {
     renotify: true,
   };
 
-  event.waitUntil(self.registration.showNotification(title, options));
+  event.waitUntil(
+    self.registration.showNotification(title, options).catch(() =>
+      self.registration.showNotification('Salim', { body: 'وصلتك رسالة جديدة', icon: '/icon-192.png' })
+    )
+  );
 });
 
 self.addEventListener('notificationclick', (event) => {

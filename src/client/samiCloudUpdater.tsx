@@ -102,7 +102,7 @@ export const SAMI_FALLBACK_VERSION_NAME = '1.3.3';
 export const DEFAULT_SAMI_SERVER_URL = 'https://ais-pre-ljvmb2ezkv67qiojp5xgpk-877998647748.europe-west2.run.app';
 
 export const SHARED_FIRESTORE_LATEST_DOC_URL =
-  'https://firestore.googleapis.com/v1/projects/gen-lang-client-0469226875/databases/ai-studio-salimtradingchal-50c5f03a-26a5-4ffd-ab5f-fd003f2fd93b/documents/app_updates/latest';
+  'https://firestore.googleapis.com/v1/projects/gen-lang-client-0204359963/databases/ai-studio-salimtradingchal-bcaa5f8f-e98b-4bbc-970c-93cebfd67fe2/documents/app_updates/latest';
 
 export interface CloudAppUpdateConfig {
   id?: string;

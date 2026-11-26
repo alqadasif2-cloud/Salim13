@@ -34,8 +34,8 @@ import { createWebSdkFirestoreClient } from './firestoreAdapter.ts';
  * Google Cloud Firestore Persistence Layer for Salim Full-Stack Application
  */
 
-const SHARED_FIREBASE_PROJECT_ID = 'gen-lang-client-0469226875';
-const SHARED_FIRESTORE_DB_ID = 'ai-studio-salimtradingchal-50c5f03a-26a5-4ffd-ab5f-fd003f2fd93b';
+const SHARED_FIREBASE_PROJECT_ID = 'gen-lang-client-0204359963';
+const SHARED_FIRESTORE_DB_ID = 'ai-studio-salimtradingchal-bcaa5f8f-e98b-4bbc-970c-93cebfd67fe2';
 
 function loadAppletConfig(): Record<string, string> {
   try {
@@ -89,16 +89,6 @@ try {
       projectId,
       databaseId: databaseId === '(default)' ? undefined : databaseId,
     };
-
-    if (process.env.GCP_SERVICE_ACCOUNT_KEY) {
-      try {
-        const raw = process.env.GCP_SERVICE_ACCOUNT_KEY.trim();
-        const jsonStr = raw.startsWith('{') ? raw : Buffer.from(raw, 'base64').toString('utf8');
-        options.credentials = JSON.parse(jsonStr);
-      } catch (e: any) {
-        console.warn('[Salim DB] Failed to parse GCP_SERVICE_ACCOUNT_KEY:', e.message);
-      }
-    }
 
     firestoreClient = new FirestoreClass(options);
     console.log(`[Salim DB] Google Cloud Firestore client initialized for project: ${projectId}, database: ${databaseId}`);

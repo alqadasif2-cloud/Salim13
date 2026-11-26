@@ -1071,12 +1071,8 @@ apiRouter.post('/fcm/prefs', async (req: Request, res: Response) => {
 
 apiRouter.post('/fcm/test', async (req: Request, res: Response) => {
   try {
-    let user = getEffectiveUser(req);
-    const bodyUserId = Number(req.body?.userId || 0);
-    if ((user.isGuest || Number(user.id) >= 9_000_000) && bodyUserId > 0 && bodyUserId < 9_000_000) {
-      user = { ...user, id: bodyUserId, isGuest: false };
-    }
-    if (!user || user.isGuest || Number(user.id) >= 9_000_000) {
+    const user = getEffectiveUser(req);
+    if (!user || user.isGuest || Number(user.id) <= 0 || Number(user.id) >= 9_000_000) {
       return res.status(401).json({ error: 'يرجى تسجيل الدخول أولاً لاختبار الإشعارات' });
     }
 

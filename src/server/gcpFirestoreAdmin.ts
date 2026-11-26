@@ -1,92 +1,54 @@
-import crypto from 'crypto';
+import { getApp, getApps, initializeApp, applicationDefault, type App } from 'firebase-admin/app';
 import { projectId, databaseId } from './db.ts';
 
 let cachedToken: { token: string; expiresAt: number } | null = null;
-let serviceAccountUnavailable = false;
+let adcCredential: ReturnType<typeof applicationDefault> | null = null;
+let adcUnavailable = false;
 let adminRestPermissionDenied = false;
 
-function base64Url(input: Buffer | string): string {
-  return Buffer.from(input)
-    .toString('base64')
-    .replace(/=/g, '')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_');
+export function getFirebaseAdminApp(): App | null {
+  if (!projectId || projectId === 'remixed-project-id') {
+    return null;
+  }
+  try {
+    if (getApps().length > 0) {
+      return getApp();
+    }
+    if (!adcCredential) {
+      adcCredential = applicationDefault();
+    }
+    return initializeApp({
+      credential: adcCredential,
+      projectId,
+    });
+  } catch {
+    return null;
+  }
 }
 
 export async function getGcpAdminAccessToken(): Promise<string | null> {
   if (cachedToken && Date.now() < cachedToken.expiresAt - 60_000) {
     return cachedToken.token;
   }
-
-  // 1. Optional GCP_SERVICE_ACCOUNT_KEY JSON or base64 JSON
-  const rawKey = process.env.GCP_SERVICE_ACCOUNT_KEY?.trim();
-  if (rawKey && !serviceAccountUnavailable) {
-    try {
-      const jsonStr = rawKey.startsWith('{') ? rawKey : Buffer.from(rawKey, 'base64').toString('utf8');
-      const sa = JSON.parse(jsonStr);
-      if (sa?.client_email && sa?.private_key) {
-        const now = Math.floor(Date.now() / 1000);
-        const header = base64Url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
-        const claims = base64Url(
-          JSON.stringify({
-            iss: sa.client_email,
-            scope: 'https://www.googleapis.com/auth/datastore https://www.googleapis.com/auth/firebase.messaging',
-            aud: sa.token_uri || 'https://oauth2.googleapis.com/token',
-            iat: now,
-            exp: now + 3600,
-          })
-        );
-        const signer = crypto.createSign('RSA-SHA256');
-        signer.update(`${header}.${claims}`);
-        const sig = base64Url(signer.sign(sa.private_key));
-        const assertion = `${header}.${claims}.${sig}`;
-
-        const resp = await fetch(sa.token_uri || 'https://oauth2.googleapis.com/token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({
-            grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-            assertion,
-          }),
-          signal: AbortSignal.timeout(4000),
-        });
-        if (resp.ok) {
-          const data: any = await resp.json();
-          if (data?.access_token) {
-            cachedToken = {
-              token: String(data.access_token),
-              expiresAt: Date.now() + Number(data.expires_in || 3600) * 1000,
-            };
-            adminRestPermissionDenied = false;
-            return cachedToken.token;
-          }
-        }
-      }
-    } catch {
-      serviceAccountUnavailable = true;
-    }
+  if (adcUnavailable) {
+    return null;
   }
 
-  // 2. Cloud Run / GCE Metadata Server (Application Default Credentials)
   try {
-    const res = await fetch(
-      'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token',
-      {
-        headers: { 'Metadata-Flavor': 'Google' },
-        signal: AbortSignal.timeout(1500),
-      }
-    );
-    if (res.ok) {
-      const data: any = await res.json();
-      if (data?.access_token) {
-        cachedToken = {
-          token: String(data.access_token),
-          expiresAt: Date.now() + Number(data.expires_in || 3600) * 1000,
-        };
-        return cachedToken.token;
-      }
+    if (!adcCredential) {
+      adcCredential = applicationDefault();
     }
-  } catch {}
+    const tokenResult = await adcCredential.getAccessToken();
+    if (tokenResult?.access_token) {
+      cachedToken = {
+        token: String(tokenResult.access_token),
+        expiresAt: Date.now() + Number(tokenResult.expires_in || 3600) * 1000,
+      };
+      return cachedToken.token;
+    }
+  } catch {
+    adcUnavailable = true;
+  }
 
   return null;
 }
@@ -154,7 +116,7 @@ export async function adminFirestoreGetDoc(
   collection: string,
   docId: string
 ): Promise<Record<string, any> | null> {
-  if (adminRestPermissionDenied && !process.env.GCP_SERVICE_ACCOUNT_KEY?.trim()) return null;
+  if (adminRestPermissionDenied) return null;
   const token = await getGcpAdminAccessToken();
   if (!token) return null;
 
@@ -165,7 +127,7 @@ export async function adminFirestoreGetDoc(
     signal: AbortSignal.timeout(5000),
   });
   if (res.status === 404) return null;
-  if (res.status === 403 && !process.env.GCP_SERVICE_ACCOUNT_KEY?.trim()) {
+  if (res.status === 403) {
     adminRestPermissionDenied = true;
     return null;
   }
@@ -182,7 +144,7 @@ export async function adminFirestoreSetDoc(
   docId: string,
   data: Record<string, any>
 ): Promise<boolean> {
-  if (adminRestPermissionDenied && !process.env.GCP_SERVICE_ACCOUNT_KEY?.trim()) return false;
+  if (adminRestPermissionDenied) return false;
   const token = await getGcpAdminAccessToken();
   if (!token) return false;
 
@@ -203,7 +165,7 @@ export async function adminFirestoreSetDoc(
     body: JSON.stringify({ fields }),
     signal: AbortSignal.timeout(5000),
   });
-  if (res.status === 403 && !process.env.GCP_SERVICE_ACCOUNT_KEY?.trim()) {
+  if (res.status === 403) {
     adminRestPermissionDenied = true;
     return false;
   }
@@ -218,7 +180,7 @@ export async function adminFirestoreListCollection(
   collection: string,
   pageSize = 200
 ): Promise<Array<{ id: string; data: Record<string, any> }>> {
-  if (adminRestPermissionDenied && !process.env.GCP_SERVICE_ACCOUNT_KEY?.trim()) return [];
+  if (adminRestPermissionDenied) return [];
   const token = await getGcpAdminAccessToken();
   if (!token) return [];
 
@@ -229,7 +191,7 @@ export async function adminFirestoreListCollection(
     signal: AbortSignal.timeout(6000),
   });
   if (res.status === 404) return [];
-  if (res.status === 403 && !process.env.GCP_SERVICE_ACCOUNT_KEY?.trim()) {
+  if (res.status === 403) {
     adminRestPermissionDenied = true;
     return [];
   }
@@ -247,7 +209,7 @@ export async function adminFirestoreListCollection(
 }
 
 export async function adminFirestoreDeleteDoc(collection: string, docId: string): Promise<boolean> {
-  if (adminRestPermissionDenied && !process.env.GCP_SERVICE_ACCOUNT_KEY?.trim()) return false;
+  if (adminRestPermissionDenied) return false;
   const token = await getGcpAdminAccessToken();
   if (!token) return false;
 
@@ -257,7 +219,7 @@ export async function adminFirestoreDeleteDoc(collection: string, docId: string)
     headers: { Authorization: `Bearer ${token}` },
     signal: AbortSignal.timeout(4000),
   });
-  if (res.status === 403 && !process.env.GCP_SERVICE_ACCOUNT_KEY?.trim()) {
+  if (res.status === 403) {
     adminRestPermissionDenied = true;
     return false;
   }

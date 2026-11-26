@@ -27,13 +27,13 @@ object SamiPushStandbyHelper {
     const val PRIVATE_CHANNEL_ID = "sami_private_messages_v2"
     const val UPDATES_CHANNEL_ID = "sami_app_updates_v2"
     const val ACTION_FCM_FOREGROUND_MESSAGE = "com.salim.tradingchallengetracker.FCM_FOREGROUND_MESSAGE"
-    const val DEFAULT_SERVER_URL = "https://ais-pre-wrwn7qrad4ng4e3ejalosp-497473975821.europe-west2.run.app"
+    const val DEFAULT_SERVER_URL = "https://ais-pre-ljvmb2ezkv67qiojp5xgpk-877998647748.europe-west2.run.app"
 
-    private const val FIREBASE_PROJECT_ID = "gen-lang-client-0469226875"
-    private const val FIREBASE_STORAGE_BUCKET = "gen-lang-client-0469226875.firebasestorage.app"
-    private const val FIREBASE_SENDER_ID = "664521829167"
-    private const val FIREBASE_API_KEY = "AIzaSyBwf9n0PLEcwECAAEhtx4Q4yD_IBXh3NW4"
-    private const val FIREBASE_FALLBACK_APP_ID = "1:664521829167:web:81dbc6766ec8c3f3d04fda"
+    private const val FIREBASE_PROJECT_ID = "gen-lang-client-0204359963"
+    private const val FIREBASE_STORAGE_BUCKET = "gen-lang-client-0204359963.firebasestorage.app"
+    private const val FIREBASE_SENDER_ID = "577103059363"
+    private const val FIREBASE_API_KEY = "AIzaSyCWSCiM0EVatqiBL5wUO8ZAfKcJHqud9dU"
+    private const val FIREBASE_FALLBACK_APP_ID = "1:577103059363:web:9b26e4e49a67e9d1cea216"
 
     fun ensureNotificationChannel(context: Context) {
         ensureNotificationChannels(context)
@@ -118,6 +118,7 @@ object SamiPushStandbyHelper {
                 host == "0.0.0.0" ||
                 host == "appassets.androidplatform.net" ||
                 host.startsWith("ais-dev-") ||
+                host.contains("wrwn7qrad4ng4e3ejalosp") ||
                 host.contains("puwra2x2ecorh5lpokb4yk") ||
                 host.endsWith(".usercontent.goog")
             ) {

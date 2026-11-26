@@ -4488,13 +4488,13 @@ if (typeof window !== "undefined") {
 var import_jszip = __toESM(require_jszip_min(), 1);
 var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
 var SAMI_FIREBASE_CONFIG = {
-  projectId: "gen-lang-client-0469226875",
-  appId: "1:664521829167:web:81dbc6766ec8c3f3d04fda",
-  apiKey: "AIzaSyBwf9n0PLEcwECAAEhtx4Q4yD_IBXh3NW4",
-  authDomain: "gen-lang-client-0469226875.firebaseapp.com",
-  firestoreDatabaseId: "ai-studio-salimtradingchal-50c5f03a-26a5-4ffd-ab5f-fd003f2fd93b",
-  storageBucket: "gen-lang-client-0469226875.firebasestorage.app",
-  messagingSenderId: "664521829167"
+  projectId: "gen-lang-client-0204359963",
+  appId: "1:577103059363:web:9b26e4e49a67e9d1cea216",
+  apiKey: "AIzaSyCWSCiM0EVatqiBL5wUO8ZAfKcJHqud9dU",
+  authDomain: "gen-lang-client-0204359963.firebaseapp.com",
+  firestoreDatabaseId: "ai-studio-salimtradingchal-bcaa5f8f-e98b-4bbc-970c-93cebfd67fe2",
+  storageBucket: "gen-lang-client-0204359963.firebasestorage.app",
+  messagingSenderId: "577103059363"
 };
 async function uploadApkViaChatAttachmentMechanism(file, versionCode, userId, onProgress, ctrl) {
   const safeName = (file.name || `sami_v${versionCode}.apk`).replace(/[^a-zA-Z0-9._-]/g, "_");
@@ -5278,7 +5278,7 @@ function SamiAdminFirebaseUpdatePanel({
       /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs", children: [
         /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "bg-[#0b0f17] p-3 rounded-xl border border-slate-800 flex items-center justify-between gap-2", children: [
           /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-slate-400", children: "\u062D\u0627\u0648\u064A\u0629 \u0627\u0644\u062A\u062E\u0632\u064A\u0646 (Storage Bucket):" }),
-          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { dir: "ltr", className: "font-bold font-['JetBrains_Mono',monospace] text-emerald-400 truncate text-[11px]", children: "gen-lang-client-0469226875.firebasestorage.app" })
+          /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { dir: "ltr", className: "font-bold font-['JetBrains_Mono',monospace] text-emerald-400 truncate text-[11px]", children: "gen-lang-client-0204359963.firebasestorage.app" })
         ] }),
         /* @__PURE__ */ (0, import_jsx_runtime3.jsxs)("div", { className: "bg-[#0b0f17] p-3 rounded-xl border border-slate-800 flex items-center justify-between gap-2", children: [
           /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("span", { className: "text-slate-400", children: "\u0642\u0627\u0639\u062F\u0629 \u0627\u0644\u0628\u064A\u0627\u0646\u0627\u062A (Firestore):" }),
@@ -5782,8 +5782,8 @@ if (typeof window !== "undefined" && window.Storage) {
 var SAMI_EXPECTED_APP_ID = "com.sami.tradingchallengetracker";
 var SAMI_FALLBACK_VERSION_CODE = 17;
 var SAMI_FALLBACK_VERSION_NAME2 = "1.3.3";
-var DEFAULT_SAMI_SERVER_URL = "https://ais-pre-wrwn7qrad4ng4e3ejalosp-497473975821.europe-west2.run.app";
-var SHARED_FIRESTORE_LATEST_DOC_URL2 = "https://firestore.googleapis.com/v1/projects/gen-lang-client-0469226875/databases/ai-studio-salimtradingchal-50c5f03a-26a5-4ffd-ab5f-fd003f2fd93b/documents/app_updates/latest";
+var DEFAULT_SAMI_SERVER_URL = "https://ais-pre-ljvmb2ezkv67qiojp5xgpk-877998647748.europe-west2.run.app";
+var SHARED_FIRESTORE_LATEST_DOC_URL2 = "https://firestore.googleapis.com/v1/projects/gen-lang-client-0204359963/databases/ai-studio-salimtradingchal-bcaa5f8f-e98b-4bbc-970c-93cebfd67fe2/documents/app_updates/latest";
 function isAndroidLocalAssetOrigin() {
   try {
     return typeof window !== "undefined" && (window.location.hostname === "appassets.androidplatform.net" || window.location.protocol === "file:");
@@ -5798,7 +5798,7 @@ function sanitizeProductionServerUrl2(rawUrl) {
     const parsed = new URL(trimmed);
     if (parsed.protocol !== "https:") return "";
     const host = parsed.hostname.toLowerCase();
-    if (!host || host === "localhost" || host === "127.0.0.1" || host === "0.0.0.0" || host === "appassets.androidplatform.net" || host.startsWith("ais-dev-") || host.includes("puwra2x2ecorh5lpokb4yk") || host.endsWith(".usercontent.goog")) {
+    if (!host || host === "localhost" || host === "127.0.0.1" || host === "0.0.0.0" || host === "appassets.androidplatform.net" || host.startsWith("ais-dev-") || host.includes("wrwn7qrad4ng4e3ejalosp") || host.includes("puwra2x2ecorh5lpokb4yk") || host.endsWith(".usercontent.goog")) {
       return "";
     }
     return parsed.origin.replace(/\/+$/, "");
