@@ -94,7 +94,7 @@ let outboxRunning = false;
 let lastFirestoreSyncAt = 0;
 let lastPrefsFirestoreSyncAt = 0;
 let lastOutboxFirestoreSyncAt = 0;
-const FIRESTORE_SYNC_TTL_MS = 15 * 1000;
+const FIRESTORE_SYNC_TTL_MS = 5 * 1000;
 
 let cachedAccessToken: { token: string; expiresAt: number } | null = null;
 
@@ -1091,11 +1091,8 @@ export async function dispatchAuthorizedChatPush(params: {
     if (now - ts > 120_000) recentDispatchedMessages.delete(msgKey);
   }
   const dedupeKey = params.messageId ? `${params.chatType}:${params.messageId}` : '';
-  if (dedupeKey) {
-    if (recentDispatchedMessages.has(dedupeKey)) {
-      return { success: true, deliveredCount: 0 };
-    }
-    recentDispatchedMessages.set(dedupeKey, now);
+  if (dedupeKey && recentDispatchedMessages.has(dedupeKey)) {
+    return { success: true, deliveredCount: 0 };
   }
 
   const senderNum = Number(params.senderId || 0);
@@ -1142,9 +1139,10 @@ export async function dispatchAuthorizedChatPush(params: {
             new Set<number>([...activeUserIds, ...subscribedUserIds, ...clientTargetIds])
           ).filter((id) => id > 0 && id < 9_000_000 && id !== senderNum);
         } else {
-          const allowedSet = new Set<number>(
-            (channel.allowedMemberIds || []).map((id) => Number(id)).filter((id) => id > 0)
-          );
+          const allowedSet = new Set<number>([
+            ...(channel.allowedMemberIds || []).map((id) => Number(id)).filter((id) => id > 0),
+            ...(channel.memberIds || []).map((id) => Number(id)).filter((id) => id > 0),
+          ]);
           for (const u of allUsers) {
             const uid = Number(u.id || 0);
             if (uid > 0 && (u.role === 'owner' || uid === 1 || uid === 76 || uid === 77)) {
@@ -1206,6 +1204,10 @@ export async function dispatchAuthorizedChatPush(params: {
       messageId: String(params.messageId || ''),
     },
   });
+
+  if (dedupeKey && (result.sentCount > 0 || (result.queuedCount || 0) > 0)) {
+    recentDispatchedMessages.set(dedupeKey, Date.now());
+  }
 
   return {
     success: true,

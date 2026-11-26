@@ -73,28 +73,27 @@ function resolveDatabaseId(): string {
 export const projectId = resolveProjectId();
 export const databaseId = resolveDatabaseId();
 
-// 1. Initialize Google Cloud Firestore Server Client (Admin SDK or Firebase Web SDK adapter)
+// 1. Initialize Firestore Server Client (prefer Web SDK adapter obeying firestore.rules; fallback to @google-cloud/firestore if configured)
 let firestoreClient: any = null;
 let firestoreInitError: string | null = null;
 
 try {
-  let FirestoreClass: any = null;
-  try {
-    const gcf = customReq('@google-cloud/firestore');
-    FirestoreClass = gcf?.Firestore || null;
-  } catch {}
+  firestoreClient = createWebSdkFirestoreClient();
+  if (!firestoreClient) {
+    let FirestoreClass: any = null;
+    try {
+      const gcf = customReq('@google-cloud/firestore');
+      FirestoreClass = gcf?.Firestore || null;
+    } catch {}
 
-  if (FirestoreClass) {
-    const options: Record<string, unknown> = {
-      projectId,
-      databaseId: databaseId === '(default)' ? undefined : databaseId,
-    };
-
-    firestoreClient = new FirestoreClass(options);
-    console.log(`[Salim DB] Google Cloud Firestore client initialized for project: ${projectId}, database: ${databaseId}`);
-  } else {
-    firestoreClient = createWebSdkFirestoreClient();
-    if (!firestoreClient) {
+    if (FirestoreClass) {
+      const options: Record<string, unknown> = {
+        projectId,
+        databaseId: databaseId === '(default)' ? undefined : databaseId,
+      };
+      firestoreClient = new FirestoreClass(options);
+      console.log(`[Salim DB] Google Cloud Firestore client initialized for project: ${projectId}, database: ${databaseId}`);
+    } else {
       console.log('[Salim DB] Running with local persistent disk store (persistent_store.json)');
     }
   }
